@@ -1,6 +1,6 @@
 {
   "name": "TFT_eSPI_UIKit",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Set of UI components to create GUI using TFT_eSPI",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     {
       "name": "jcma86",
       "email": "jose@cruzmarquez.com",
-      "website": "https://profile.cruzmarquez.com",
+      "url": "https://profile.cruzmarquez.com",
       "maintainer": true
     }
   ],
