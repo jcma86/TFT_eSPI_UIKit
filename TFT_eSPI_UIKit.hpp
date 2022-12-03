@@ -1,6 +1,7 @@
 #ifndef __UIKIT__
 #define __UIKIT__
 
+#include "FS.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 
