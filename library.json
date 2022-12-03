@@ -4,7 +4,7 @@
   "description": "Set of UI components to create GUI using TFT_eSPI",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jcma86/uikit-for-tft-espi"
+    "url": "https://github.com/jcma86/TFT_eSPI_UIKit"
   },
   "authors": [
     {
@@ -14,6 +14,6 @@
     }
   ],
   "frameworks": "arduino",
-  "platforms": "raspberrypi, espressif8266, espressif32, ststm32",
-  "headers": "uikit.h"
+  "platforms": "raspberrypi, espressif32, espressif8266, ststm32",
+  "headers": "uikit.hpp"
 }
