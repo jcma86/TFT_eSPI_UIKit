@@ -1,5 +1,5 @@
-#ifndef __UIKIT_INDICATORS_LED__
-#define __UIKIT_INDICATORS_LED__
+#ifndef __UIKIT_DISPLAY_LED__
+#define __UIKIT_DISPLAY_LED__
 
 #include "../../base/BaseComponent.hpp"
 

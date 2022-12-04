@@ -1,5 +1,5 @@
-#ifndef __UIKIT_INDICATORS_PROGRESS_BAR__
-#define __UIKIT_INDICATORS_PROGRESS_BAR__
+#ifndef __UIKIT_DISPLAY_PROGRESS_BAR__
+#define __UIKIT_DISPLAY_PROGRESS_BAR__
 
 #include "../../base/BaseComponent.hpp"
 

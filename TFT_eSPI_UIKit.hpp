@@ -1,5 +1,5 @@
-#ifndef __UIKIT__
-#define __UIKIT__
+#ifndef __TFT_ESPI_UIKIT__
+#define __TFT_ESPI_UIKIT__
 
 #include "FS.h"
 #include <SPI.h>
@@ -18,8 +18,9 @@
 #include "buttons/toggle/ToggleButton.hpp"
 #include "buttons/toggle/ToggleButtonInterface.hpp"
 
-#include "indicators/led/Led.hpp"
-#include "indicators/progress/ProgressBar.hpp"
+#include "display/led/Led.hpp"
+#include "display/progress/ProgressBar.hpp"
+#include "display/label/Label.hpp"
 
 #include "list/List.hpp"
 #include "list/ListInterface.hpp"

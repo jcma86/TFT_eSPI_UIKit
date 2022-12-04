@@ -120,4 +120,12 @@
 #define LED_OFF_COLOR COLOR_GREEN
 #endif
 
+// LABEL
+#ifndef LABEL_COLOR
+#define LABEL_COLOR COLOR_DARK_GRAY
+#endif
+#ifndef LABEL_FONT_FAMILY
+#define LABEL_FONT_FAMILY KdamThmorProRegular16
+#endif
+
 #endif

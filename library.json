@@ -33,6 +33,16 @@
       "version": "*"
     }
   ],
+  "examples": [
+    {
+      "name": "TestScreen",
+      "base": "examples/TestScreen",
+      "files": [
+        "TestScreen.cpp",
+        "TestScreen.hpp"
+      ]
+    }
+  ],
   "frameworks": "arduino",
   "platforms": "raspberrypi, espressif32, espressif8266, ststm32",
   "headers": "TFT_eSPI_UIKit.hpp"
