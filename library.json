@@ -1,6 +1,6 @@
 {
   "name": "TFT_eSPI_UIKit",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Set of UI components to create GUI using TFT_eSPI",
   "repository": {
     "type": "git",
@@ -40,6 +40,14 @@
       "files": [
         "TestScreen.cpp",
         "TestScreen.hpp"
+      ]
+    },
+    {
+      "name": "MeterScreen",
+      "base": "examples/MeterScreen",
+      "files": [
+        "MeterScreen.cpp",
+        "MeterScreen.hpp"
       ]
     }
   ],

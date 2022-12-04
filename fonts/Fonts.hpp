@@ -11,6 +11,12 @@
 #include "FragmentMono-Regular-16.h"
 #include "FragmentMono-Regular-20.h"
 
+#include "OpenSans-Regular14.h"
+
+#include "KdamThmorPro-Regular14.h"
 #include "KdamThmorPro-Regular16.h"
+
+#include "Led12Segment-Regular16.h"
+#include "Led12Segment-Regular20.h"
 
 #endif

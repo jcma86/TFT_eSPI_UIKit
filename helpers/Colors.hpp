@@ -8,6 +8,7 @@
 #define COLOR_WHITE 0xffff      // getColorFromRGB(255,255,255)
 #define COLOR_BLACK 0x0         // getColorFromRGB(0,0,0)
 #define COLOR_RED 0xf800        // getColorFromRGB(255,0,0)
+#define COLOR_YELLOW 0xffe0     // getColorFromRGB(255,255,0)
 #define COLOR_GREEN 0x7e0       // getColorFromRGB(0,255,0)
 #define COLOR_BLUE 0x1f         // getColorFromRGB(0, 0,255)
 #define COLOR_DARK_GRAY 0x29c9  // getColorFromRGB(46, 56, 77)

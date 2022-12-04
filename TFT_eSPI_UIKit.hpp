@@ -21,6 +21,8 @@
 #include "display/led/Led.hpp"
 #include "display/progress/ProgressBar.hpp"
 #include "display/label/Label.hpp"
+#include "display/meter/MeterBase.hpp"
+#include "display/meter/analog/AnalogMeter.hpp"
 
 #include "list/List.hpp"
 #include "list/ListInterface.hpp"

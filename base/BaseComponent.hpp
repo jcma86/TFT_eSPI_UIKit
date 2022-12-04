@@ -33,6 +33,8 @@ public:
   void setParentViewport(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
   void setDimensions(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
   void setIsVisible(bool _isVisible = true);
+
+  virtual void updateState() = 0;
 };
 
 #endif
