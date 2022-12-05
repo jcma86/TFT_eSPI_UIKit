@@ -2,6 +2,14 @@
 
 AnalogMeter::AnalogMeter(TFT_eSPI *tft, const char *id) : MeterBase(tft, id)
 {
+  // TODO: Find way to adjust meter to custom sizes
+  // in the meantime will force a fixed size.
+  _w = __ANALOG_METER_WIDTH__;
+  _h = __ANALOG_METER_HEIGHT__;
+  _degrees = 200;
+
+  strcpy(_units, "");
+  strcpy(_units, "Metter");
   _shouldRedraw = true;
   _isReady = true;
 }
@@ -9,6 +17,15 @@ AnalogMeter::AnalogMeter(TFT_eSPI *tft, const char *id) : MeterBase(tft, id)
 void AnalogMeter::setArcDegrees(int degrees)
 {
   _degrees = degrees;
+  _shouldRedraw = true;
+}
+
+void AnalogMeter::setMarkSteps(int longStep, int shortStep, int labelStep)
+{
+  _stepLongMark = longStep;
+  _stepShortMark = shortStep;
+  _stepLabel = labelStep;
+
   _shouldRedraw = true;
 }
 
@@ -32,38 +49,57 @@ void AnalogMeter::draw(bool forceRedraw)
   _tft->resetViewport();
   _tft->setViewport(_vX, _vY, _vW, _vH);
 
-  float arcRadius = (_w / 2) - (_w == _h ? 20 : 50);
+  char minTag[5];
+  char maxTag[5];
+  _tft->loadFont(ANALOG_METER_UNITS_FONT_FAMILY);
+  sprintf(minTag, "%.0f", _range.min);
+  sprintf(maxTag, "%.0f", _range.max);
+  int tw = _tft->textWidth(strlen(minTag) > strlen(maxTag) ? minTag : maxTag);
+  _tft->unloadFont();
+
+  float arcRadius = (_w / 2) - (2 * tw);
   float arcMidPoint = (_degrees / 2);
-  float distY = sin((-arcMidPoint - 90) * 0.0174532925);
-
-  distY = _y + ((distY * (arcRadius + 20)) + (_h / 2));
-  distY = _h - distY - 10;
-
-  if (distY < 0.0)
-  {
-    arcRadius = (_h / 2) - 40;
-    distY = sin((-arcMidPoint - 90) * 0.0174532925);
-    distY = _y + ((distY * (arcRadius + 20)) + (_h / 2));
-    distY = _h - distY - 10;
-  }
 
   uint16_t xCircCenter = _w / 2;
-  uint16_t yCircCenter = (_h / 2) + distY;
+  uint16_t yCircCenter = (_h / 2) + 30;
+  if (strlen(_title) > 0)
+    yCircCenter += 12;
 
   if (force)
   {
     _tft->fillRect(_x, _y, _w, _h, ANALOG_METER_BORDER_COLOR);
     _tft->fillRect(_x + 2, _y + 2, _w - 4, _h - 4, ANALOG_METER_BACKGROUND_COLOR);
 
-    _tft->loadFont(ANALOG_METER_FONT_FAMILY);
-    _tft->setTextSize(BUTTON_FONT_SIZE);
-    _tft->setTextColor(ANALOG_METER_FONT_COLOR);
-    for (int i = -arcMidPoint; i <= arcMidPoint; i += __ANALOG_METER_SHORT_STEP__)
+    if (strlen(_title) > 0)
     {
-      int currentTempMark = map((i + arcMidPoint), 0, _degrees, _range.min, _range.max);
+      _tft->loadFont(ANALOG_METER_TITLE_FONT_FAMILY);
+      _tft->setTextSize(ANALOG_METER_FONT_SIZE);
+      _tft->setTextColor(ANALOG_METER_TITLE_FONT_COLOR);
+      _tft->setTextDatum(MC_DATUM);
+      _tft->drawString(_title, _x + (_w / 2), _y + 13);
+      _tft->unloadFont();
+    }
+
+    _tft->loadFont(ANALOG_METER_FONT_FAMILY);
+    _tft->setTextSize(ANALOG_METER_FONT_SIZE);
+    _tft->setTextColor(ANALOG_METER_FONT_COLOR);
+
+    int tempRange = _range.max - _range.min;
+    // float tempRangeStep = tempRange / (float)(_degrees / __ANALOG_METER_LONG_STEP__);
+
+    int lastMark = 9999999;
+    for (int i = -arcMidPoint; i <= arcMidPoint; i += 1)
+    {
+      int currentMark = map((i + arcMidPoint), 0, _degrees, _range.min, _range.max);
 
       // Long or short scale tick length
-      int tl = i % __ANALOG_METER_LONG_STEP__ == 0 ? 15 : 8;
+      int tl = 0;
+      if (currentMark == lastMark)
+        tl = 0;
+      else if (currentMark % _stepLongMark == 0)
+        tl = 15;
+      else if (currentMark % _stepShortMark == 0)
+        tl = 8;
 
       // Coodinates of tick to draw
       uint16_t x0;
@@ -100,7 +136,7 @@ void AnalogMeter::draw(bool forceRedraw)
 
         for (std::pair<COLOR, MeterRange> element : _rangeColors)
         {
-          if (currentTempMark >= element.second.min && currentTempMark < element.second.max)
+          if (currentMark >= element.second.min && currentMark < element.second.max)
           {
             _tft->fillTriangle(xColor0, yColor0, xColor1, yColor1, xColor2, yColor2, element.first);
             _tft->fillTriangle(xColor1, yColor1, xColor2, yColor2, xColor3, yColor3, element.first);
@@ -109,19 +145,14 @@ void AnalogMeter::draw(bool forceRedraw)
       }
 
       // Draw tick
-      _tft->drawLine(x0, y0, x1, y1, ANALOG_METER_ARC_MARK_COLOR);
+      if (tl != 0)
+        _tft->drawLine(x0, y0, x1, y1, ANALOG_METER_ARC_MARK_COLOR);
 
       // Check if labels should be drawn, with position tweaks
-      if (i % __ANALOG_METER_LONG_STEP__ == 0)
+      if (currentMark % _stepLabel == 0 && lastMark != currentMark)
       {
-        int tempRange = _range.max - _range.min;
-        float tempRangeStep = tempRange / (float)(_degrees / __ANALOG_METER_LONG_STEP__);
-        float currentTempStep = (i + arcMidPoint) / (float)__ANALOG_METER_LONG_STEP__;
-
-        float currentLabelValue = _range.min + (currentTempStep * tempRangeStep);
-
         char valLabel[10];
-        sprintf(valLabel, "%.0f", round(currentLabelValue));
+        sprintf(valLabel, "%d", currentMark);
 
         // Calculate label positions
         x0 = _x + (sx * (arcRadius + tl + 14) + xCircCenter);
@@ -138,19 +169,27 @@ void AnalogMeter::draw(bool forceRedraw)
       // Draw scale arc, don't draw the last part
       if (i < arcMidPoint)
         _tft->drawLine(x0, y0, x1, y1, ANALOG_METER_ARC_MARK_COLOR);
+
+      lastMark = currentMark;
     }
     _tft->unloadFont();
   }
 
-  // // Draw units
-  // if (strlen(_units) > 0)
-  // {
-  //   _tft->setTextColor(TFT_ORANGE);
-  //   _tft->setFreeFont(&Lato_Bold12pt8b);
-  //   _tft->setTextDatum(MC_DATUM);
-  //   _tft->drawString(_units, _x + xCircCenter, _y + _h - 25);
-  // }
+  // Draw units
+  if (strlen(_units) > 0)
+  {
+    _tft->loadFont(ANALOG_METER_UNITS_FONT_FAMILY);
+    _tft->setTextSize(ANALOG_METER_UNITS_FONT_SIZE);
+    _tft->setTextColor(ANALOG_METER_UNITS_FONT_COLOR);
 
+    _tft->setTextColor(TFT_ORANGE);
+    _tft->setTextDatum(MC_DATUM);
+    _tft->drawString(_units, _x + xCircCenter, _y + _h - 25);
+
+    _tft->unloadFont();
+  }
+
+  // Draw indicator
   if (_valChanged || force)
   {
     float prevDeg = valueToDeg(_prevValue);
@@ -159,16 +198,16 @@ void AnalogMeter::draw(bool forceRedraw)
     float tmpDeg = prevDeg;
 
     bool dir = isnan(_value) ? false : prevDeg < currDeg;
+    int offset = 20;
     while (tmpDeg != currDeg)
     {
       _tft->drawLine(_prevx0, _prevy0, _prevx1, _prevy1, ANALOG_METER_BACKGROUND_COLOR);
       float sx = cos((tmpDeg - 90) * 0.0174532925);
       float sy = sin((tmpDeg - 90) * 0.0174532925);
-      int offset = 45;
       int x0 = _x + xCircCenter + (sx * offset);
       int y0 = _y + yCircCenter + (sy * offset);
-      int x1 = _x + xCircCenter + (sx * (offset + __ANALOG_METER_INDICATOR_SIZE__));
-      int y1 = _y + yCircCenter + (sy * (offset + __ANALOG_METER_INDICATOR_SIZE__));
+      int x1 = _x + xCircCenter + (sx * (arcRadius - 2));
+      int y1 = _y + yCircCenter + (sy * (arcRadius - 2));
 
       _tft->drawLine(x0, y0, x1, y1, ANALOG_METER_INDICATOR_COLOR);
 

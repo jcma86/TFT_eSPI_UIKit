@@ -40,10 +40,10 @@ unsigned long t = 0;
 void MeterScreen::updateState()
 {
   analogMeter.updateState();
-  if (millis() - t > 1000)
+  if (millis() - t > 10000)
   {
     t = millis();
-    analogMeter.setValue(random(-60, 60));
+    analogMeter.setValue(random(0, 55));
   }
 }
 
@@ -57,7 +57,6 @@ void MeterScreen::drawContent()
 
   if (!analogMeter.isReady())
   {
-    Serial.printf("Yellow %x\n", getColorFromRGB(255, 255, 0));
     analogMeter = AnalogMeter(_tft, "AnalogMeter");
     analogMeter.setParentViewport(_contentX, _contentY, _contentW, _contentH);
     analogMeter.addRangeColor(std::pair<COLOR, MeterRange>(COLOR_RED, MeterRange{.min = -50.0, .max = -20.0}));
@@ -66,9 +65,10 @@ void MeterScreen::drawContent()
     randomSeed(millis());
   }
 
-  analogMeter.setDimensions(10, 10, 250, 120);
-  analogMeter.setArcDegrees(150);
-  analogMeter.setRange(-50.0, 50.0);
+  analogMeter.setPosition(10, 10);
+  analogMeter.setRange(-30.0, 40.0);
   analogMeter.setValue(30.0);
+  analogMeter.setUnits("\u00b0C");
+  analogMeter.setTitle("Analog Meter");
   analogMeter.draw(_shouldRedraw);
 }

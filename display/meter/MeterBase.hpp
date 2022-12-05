@@ -16,6 +16,8 @@ protected:
   float _value = 0.0;
   float _prevValue = -1.0;
   bool _valChanged = true;
+  char _units[7];
+  char _title[20];
   MeterRange _range = {.min = 0.0, .max = 100.0};
   std::map<COLOR, MeterRange> _rangeColors;
 
@@ -26,6 +28,9 @@ public:
   void setRange(float minValue = 0.0, float maxVaue = 100.0);
   void setRangeColors(std::map<COLOR, MeterRange> &thresholds);
   void setValue(float value);
+  void setUnits(const char *units);
+  void setTitle(const char *title);
+  void setPosition(uint16_t x, uint16_t y);
   void clearRangeColors();
   void addRangeColor(std::pair<COLOR, MeterRange> threshold);
 
