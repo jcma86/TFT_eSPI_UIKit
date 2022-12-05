@@ -31,9 +31,7 @@
 
 TestScreen::TestScreen(TFT_eSPI *tft, const char *title) : Screen(tft, title)
 {
-  _tft = tft;
   _shouldRedraw = true;
-  strcpy(_title, title);
 }
 
 void TestScreen::updateState()

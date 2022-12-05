@@ -24,6 +24,7 @@ using namespace std;
 class Screen
 {
 protected:
+  TFT_eSPI *_tft = NULL;
   string _id;
   ScreenInterface *_delegate = NULL;
 
@@ -39,7 +40,6 @@ protected:
   virtual void drawContent() = 0;
 
 private:
-  TFT_eSPI *_tft = NULL;
   uint32_t _x;
   uint32_t _y;
   uint32_t _w;

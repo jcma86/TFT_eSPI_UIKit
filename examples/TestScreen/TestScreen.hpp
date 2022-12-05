@@ -39,10 +39,6 @@ using namespace std;
 class TestScreen : public Screen
 {
 private:
-  TFT_eSPI *_tft;
-  bool _closeBtn;
-  char _title[50];
-
   void drawContent();
   void updateState();
 
