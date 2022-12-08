@@ -16,7 +16,8 @@
 #include "KdamThmorPro-Regular14.h"
 #include "KdamThmorPro-Regular16.h"
 
-#include "Led12Segment-Regular16.h"
-#include "Led12Segment-Regular20.h"
+#include "SevenSegment32.h"
+
+#include "Montserrat-Medium20.h"
 
 #endif

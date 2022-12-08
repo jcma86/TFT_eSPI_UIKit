@@ -41,6 +41,7 @@ public:
   void setCustomColors(COLOR backgroundOn, COLOR backgroundOff, COLOR textOn, COLOR textOff);
   void clearCustomColors();
   void setLabels(const char *labelON, const char *labelOFF);
+  bool getState();
 
   void updateState();
   void draw(bool forceRedraw = false);

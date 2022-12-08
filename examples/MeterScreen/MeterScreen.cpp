@@ -38,11 +38,14 @@ unsigned long t = 0;
 void MeterScreen::updateState()
 {
   analogMeter.updateState();
+  digitalMeter.updateState();
   if (millis() - t > 10000)
   {
     t = millis();
     analogMeter.setValue(random(0, 55));
+    digitalMeter.setValue(random(0, 55));
   }
+  group.updateState();
 }
 
 void MeterScreen::drawContent()
@@ -63,10 +66,37 @@ void MeterScreen::drawContent()
     randomSeed(millis());
   }
 
+  if (!digitalMeter.isReady())
+  {
+    digitalMeter = DigitalMeter(_tft, "DigitalMeter");
+    digitalMeter.setParentViewport(_contentX, _contentY, _contentW, _contentH);
+    digitalMeter.setColor(COLOR_BLACK);
+  }
+
+  if (!group.isReady())
+  {
+    group = SwitchGroup(_tft, "Group");
+    group.setParentViewport(_contentX, _contentY, _contentW, _contentH);
+    group.setButtonWidth(35);
+    group.addButton("0", "0");
+    group.addButton("1", "1");
+    group.addButton("2", "2");
+    group.addButton("3", "3");
+    group.addButton("4", "4");
+    group.addButton("5", "5");
+    // group.setAllowMultiSelection();
+  }
+
   analogMeter.setPosition(10, 10);
   analogMeter.setRange(-30.0, 40.0);
   analogMeter.setValue(30.0);
   analogMeter.setUnits("\u00b0C");
   analogMeter.setTitle("Analog Meter");
   analogMeter.draw(_shouldRedraw);
+
+  digitalMeter.setPosition(320, 10);
+  digitalMeter.draw(_shouldRedraw);
+
+  group.setDimensions(10, 160, 310, 90);
+  group.draw(_shouldRedraw);
 }

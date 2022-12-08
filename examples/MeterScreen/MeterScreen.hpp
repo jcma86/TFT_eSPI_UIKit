@@ -43,6 +43,8 @@ private:
   void updateState();
 
   AnalogMeter analogMeter;
+  DigitalMeter digitalMeter;
+  SwitchGroup group;
 
   // Interfaces
   // void onScreenClose(const char *id);

@@ -9,7 +9,6 @@ AnalogMeter::AnalogMeter(TFT_eSPI *tft, const char *id) : MeterBase(tft, id)
   _degrees = 200;
 
   strcpy(_units, "");
-  strcpy(_units, "Metter");
   _shouldRedraw = true;
   _isReady = true;
 }

@@ -43,6 +43,11 @@ void ToggleButton::setLabels(const char *labelON, const char *labelOFF)
   _shouldRedraw = true;
 }
 
+bool ToggleButton::getState()
+{
+  return _state;
+}
+
 void ToggleButton::updateState()
 {
   if (!_isReady)
@@ -78,8 +83,6 @@ void ToggleButton::draw(bool forceRedraw)
 
   _button.setDimensions(0, 0, _w, _h);
   _button.draw(_state ? _labelON : _labelOFF, force);
-
-  Serial.println("Created toggle");
 
   _shouldRedraw = false;
 }

@@ -127,7 +127,6 @@ void Button::draw(const char *label, bool forceRedraw)
   else
     backColor = _isPressed ? BUTTON_BACKGROUND_COLOR_PRESSED : BUTTON_BACKGROUND_COLOR_NORMAL;
 
-  // _tft->setFreeFont(BUTTON_FONT_FAMILY);
   _tft->loadFont(BUTTON_FONT_FAMILY);
   _tft->setTextSize(BUTTON_FONT_SIZE);
   _tft->setTextColor(textColor);
@@ -145,7 +144,7 @@ void Button::draw(const char *label, bool forceRedraw)
     _tft->fillRect(_x, _y, _w, _h, backColor);
     textX = _x + (_w / 2);
   }
-  textY += 3;
+  textY += 2;
 
   _tft->drawString(label, textX, textY);
 
