@@ -20,6 +20,8 @@ void Screen::setDelegate(ScreenInterface *delegate)
 
 void Screen::drawTitleBar()
 {
+  if (_fullScreen)
+    return;
   if (_titleBar)
   {
     _tft->setTextColor(TITLE_BAR_FONT_COLOR);
@@ -45,7 +47,7 @@ void Screen::drawScreen()
   }
 
   uint8_t bWidth = 0; //_border ? UI_BORDER_WIDTH : 0;
-  uint32_t offset = _titleBar ? TITLE_BAR_HEIGHT + bWidth : 0;
+  uint32_t offset = _titleBar && !_fullScreen ? TITLE_BAR_HEIGHT + bWidth : 0;
 
   uint32_t x = _x + bWidth;
   uint32_t y = _y + bWidth;
@@ -79,10 +81,16 @@ void Screen::drawScreen()
   drawContent();
 }
 
+void Screen::setFullScreen(bool fullScreen)
+{
+  _fullScreen = fullScreen;
+  _shouldRedraw = true;
+}
+
 void Screen::showScreen(bool forceRedraw, bool titleBar, bool closeBtn, bool onBackground)
 {
   _onBackground = onBackground;
-  _shouldRedraw = _shouldRedraw || forceRedraw;
+  _shouldRedraw = _shouldRedraw || _forceRedraw || forceRedraw;
 
   _titleBar = titleBar;
   _closeBtn = closeBtn;
@@ -90,5 +98,6 @@ void Screen::showScreen(bool forceRedraw, bool titleBar, bool closeBtn, bool onB
   updateState();
   drawScreen();
 
-  _shouldRedraw = false;
+  _shouldRedraw = false || _forceRedraw;
+  _forceRedraw = false;
 }

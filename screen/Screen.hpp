@@ -30,6 +30,8 @@ protected:
 
   bool _onBackground = false;
   bool _shouldRedraw = false;
+  bool _fullScreen = false;
+  bool _forceRedraw = false;
 
   uint32_t _contentX;
   uint32_t _contentY;
@@ -57,6 +59,9 @@ public:
   Screen(TFT_eSPI *tft, const char *title);
   ~Screen() {}
 
+  virtual void handleInterruption(int pin, void *param) {}
+
+  void setFullScreen(bool fullScreen = true);
   virtual void setDelegate(ScreenInterface *delegate);
   void showScreen(bool forceRedraw = false, bool titleBar = true, bool closeBtn = true, bool onBackground = false);
 };
