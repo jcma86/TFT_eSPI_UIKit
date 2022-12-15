@@ -102,7 +102,7 @@ void Button::draw(const char *label, bool forceRedraw)
     return;
 
   _tft->resetViewport();
-  _tft->setViewport(_vX, _vY, _vW, _vH);
+  _tft->setViewport(_vX + _x, _vY + _y, _w, _h);
   strcpy(_label, label);
 
   COLOR textColor;
@@ -132,17 +132,17 @@ void Button::draw(const char *label, bool forceRedraw)
   _tft->setTextColor(textColor);
 
   uint32_t textX = 0;
-  uint32_t textY = _y + (_h / 2);
+  uint32_t textY = _h / 2;
   if (_mode == TEXT)
   {
     if (_hasCustomColor)
-      _tft->fillRect(_x, _y, _w, _h, backColor);
-    textX = _x;
+      _tft->fillRect(0, 0, _w, _h, backColor);
+    textX = 0;
   }
   if (_mode == NORMAL)
   {
-    _tft->fillRect(_x, _y, _w, _h, backColor);
-    textX = _x + (_w / 2);
+    _tft->fillRect(0, 0, _w, _h, backColor);
+    textX = (_w / 2);
   }
   textY += 2;
 

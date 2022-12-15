@@ -27,6 +27,9 @@
 #include "display/meter/analog/AnalogMeter.hpp"
 #include "display/meter/digital/DigitalMeter.hpp"
 
+#include "inputs/numeric/NumericInput.hpp"
+#include "inputs/InputInterface.hpp"
+
 #include "list/List.hpp"
 #include "list/ListInterface.hpp"
 

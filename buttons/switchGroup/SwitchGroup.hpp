@@ -11,9 +11,10 @@ class SwitchGroup : public BaseComponent, public ToggleButtonInterface
 {
 private:
   SwitchGroupInterface *_delegate = NULL;
+  bool _asButtons = false;
   bool _horizontal = true;
   bool _allowMultiSelection = false;
-  std::vector<ToggleButton> _buttons;
+  std::vector<ToggleButton> _buttons; // TODO: Accept Buttons or ToggleButtons
   uint16_t _btnWidth = 50;
 
   void onToggle(const char *btnId, bool state);
@@ -25,6 +26,7 @@ public:
   void setDelegate(SwitchGroupInterface *delegate);
   void setIsHorizontal(bool isHorizontal = true);
   void setAllowMultiSelection(bool allowMulti = true);
+  void setBehaveAsButtons(bool asButton = true);
   void setStates(std::vector<bool> state);
   void setState(int index, bool state);
   void setButtonWidth(uint16_t width);

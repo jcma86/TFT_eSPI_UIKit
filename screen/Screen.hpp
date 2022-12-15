@@ -63,7 +63,8 @@ public:
 
   void setFullScreen(bool fullScreen = true);
   virtual void setDelegate(ScreenInterface *delegate);
-  void showScreen(bool forceRedraw = false, bool titleBar = true, bool closeBtn = true, bool onBackground = false);
+  void setOnBackground(bool onBackground=true);
+  void showScreen(bool forceRedraw = false, bool titleBar = true, bool closeBtn = true);
 };
 
 #endif

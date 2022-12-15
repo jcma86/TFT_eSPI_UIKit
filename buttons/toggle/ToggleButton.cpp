@@ -67,11 +67,11 @@ void ToggleButton::draw(bool forceRedraw)
     return;
 
   _tft->resetViewport();
-  _tft->setViewport(_vX, _vY, _vW, _vH);
+  _tft->setViewport(_vX + _x, _vY + _y, _w, _h);
   if (!_button.isReady())
   {
     _button = Button(_tft, "toogleButton");
-    _button.setParentViewport(_x + _vX, _y + _vY, _w + _vW, _h + _vH);
+    _button.setParentViewport(_x + _vX, _y + _vY, _w, _h);
     _button.setIsEnabled(true);
     _button.setDelegate(this);
   }

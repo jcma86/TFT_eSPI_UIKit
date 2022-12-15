@@ -134,6 +134,7 @@ void TestScreen::drawContent()
     redLed.draw(_shouldRedraw);
 
     label.setPosition(230, 18);
-    label.draw("Test!!", _shouldRedraw);
+    label.setLabel("Test!!");
+    label.draw(_shouldRedraw);
   }
 }

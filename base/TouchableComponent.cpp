@@ -2,8 +2,11 @@
 
 bool TouchableComponent::isValidTouch(uint16_t x, uint16_t y)
 {
-  return (y < (_y + _h) && y > _y &&
-          x < (_x + _w) && x > _x);
+  // Serial.printf("%d,%d --> %d %d (%d %d) --> %d %d (%d %d)\n", x, y, _x, _y, _w, _h, _vX, _vY, _vW, _vH);
+  uint16_t offsetY = _vY + _y;
+  uint16_t offsetX = _vX + _x;
+
+  return (y > offsetY && y < (offsetY + _h) && x > offsetX && x < (offsetX + _w));
 }
 
 void TouchableComponent::processTouch()
@@ -11,15 +14,12 @@ void TouchableComponent::processTouch()
   if (!_touchableEnabled)
     return;
 
-  if (millis() - lastTouch < 40)
+  if (millis() - lastTouch < 20)
     return;
 
   if (_tft->getTouch(&_touchX, &_touchY))
   {
     lastTouch = millis();
-    _touchY -= _vY;
-    _touchX -= _vX;
-
     // Use to validation if touch ENDED in valid area
     _prevTouchX = _touchX;
     _prevTouchY = _touchY;
@@ -39,7 +39,7 @@ void TouchableComponent::processTouch()
   {
     if (_onTouchStart)
     {
-      if (!_touchStartedOutside && isValidTouch(_prevTouchX, _prevTouchY) && millis() - currentTouch > 80)
+      if (!_touchStartedOutside && isValidTouch(_prevTouchX, _prevTouchY) && millis() - currentTouch > 20)
       {
         onTouch();
         onTouchEnd();

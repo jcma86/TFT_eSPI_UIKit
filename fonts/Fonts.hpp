@@ -11,6 +11,10 @@
 #include "FragmentMono-Regular-16.h"
 #include "FragmentMono-Regular-20.h"
 
+#include "LiberationMono-Regular18.h"
+#include "LiberationMono-Regular22.h"
+#include "LiberationMono-Regular28.h"
+
 #include "OpenSans-Regular14.h"
 
 #include "KdamThmorPro-Regular14.h"

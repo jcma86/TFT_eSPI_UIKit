@@ -7,7 +7,7 @@ class SwitchGroupInterface
 {
 public:
   virtual ~SwitchGroupInterface() {}
-  virtual void onSwitch(int btnIndex, std::vector<bool> states) = 0;
+  virtual void onSwitch(const char *id, int btnIndex, std::vector<bool> states) = 0;
 };
 
 #endif

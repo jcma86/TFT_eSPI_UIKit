@@ -9,26 +9,26 @@
  *
  * Add to your main file:
  *   #include "TFT_eSPI_UIKit.hpp"
- *   #include "MeterScreen.hpp"
+ *   #include "InputScreen.hpp"
  *
  *   TFT_eSPI tft = TFT_eSPI();
- *   MeterScreen meterScreen;
+ *   InputScreen inputScreen;
  *
  * In your setup() method:
  *   tft.init();
  *   tft.setRotation(1);
- *   meterScreen = MeterScreen(&tft, "Meter!!");
+ *   inputScreen = InputScreen(&tft, "Meter!!");
  *
  * And in your loop() method:
- *   meterScreen.showScreen();
+ *   inputScreen.showScreen();
  *
  *
  * You will see on your TFT creen several UI components
  *
  */
 
-#ifndef __UIKIT_EXAMPLE_METERSCREEN__
-#define __UIKIT_EXAMPLE_METERSCREEN__
+#ifndef __UIKIT_EXAMPLE_INPUTSCREEN__
+#define __UIKIT_EXAMPLE_INPUTSCREEN__
 
 #include <string>
 
@@ -36,22 +36,23 @@
 
 using namespace std;
 
-class MeterScreen : public Screen
+class InputScreen : public Screen, public InputInterface, public ButtonInterface
 {
 private:
   void drawContent();
   void updateState();
 
-  AnalogMeter analogMeter;
-  DigitalMeter digitalMeter;
-  SwitchGroup group;
-
+  NumericInput _numericInput;
+  Button _showNumericImputBtn;
   // Interfaces
   // void onScreenClose(const char *id);
+  void onButtonTouch(const char *id);
+  void onInputComplete(const char *btnId, const char *value);
+  void onInputCancel(const char *btnId);
 
 public:
-  MeterScreen() {}
-  MeterScreen(TFT_eSPI *tft, const char *title);
+  InputScreen() {}
+  InputScreen(TFT_eSPI *tft, const char *title);
 };
 
 #endif

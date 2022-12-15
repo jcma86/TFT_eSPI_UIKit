@@ -62,6 +62,12 @@ void SwitchGroup::setButtonWidth(uint16_t width)
   _shouldRedraw = true;
 }
 
+void SwitchGroup::setBehaveAsButtons(bool asButton)
+{
+  _asButtons = asButton;
+  _shouldRedraw = true;
+}
+
 void SwitchGroup::addButton(const char *id, const char *label)
 {
   char btnId[80];
@@ -115,6 +121,9 @@ void SwitchGroup::draw(bool forceRedraw)
   int16_t yPos = 0;
   int padding = 5;
 
+  _tft->resetViewport();
+  _tft->setViewport(_vX, _vY, _vW, _vH);
+
   for (int i = 0; i < _buttons.size(); i += 1)
   {
     _buttons[i].setDimensions(_x + xPos, _y + yPos, _btnWidth, BUTTON_HEIGHT);
@@ -152,12 +161,12 @@ void SwitchGroup::onToggle(const char *btnId, bool state)
   if (!_allowMultiSelection && state)
     for (int i = 0; i < _buttons.size(); i += 1)
     {
-      if (i == index)
+      if (i == index && !_asButtons)
         continue;
       if (_buttons[i].getState())
         _buttons[i].setState(false);
     }
 
   if (_delegate)
-    _delegate->onSwitch(index, getCurrentState());
+    _delegate->onSwitch(_id, index, getCurrentState());
 }

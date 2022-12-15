@@ -35,7 +35,7 @@
 
 // BUTTON
 #ifndef BUTTON_FONT_FAMILY
-#define BUTTON_FONT_FAMILY MontserratMedium20
+#define BUTTON_FONT_FAMILY LiberationMonoRegular22
 #endif
 #ifndef BUTTON_FONT_SIZE
 #define BUTTON_FONT_SIZE 1
@@ -125,7 +125,7 @@
 #define LABEL_COLOR COLOR_DARK_GRAY
 #endif
 #ifndef LABEL_FONT_FAMILY
-#define LABEL_FONT_FAMILY KdamThmorProRegular16
+#define LABEL_FONT_FAMILY LiberationMonoRegular18
 #endif
 
 // ANALOG METER

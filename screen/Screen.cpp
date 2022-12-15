@@ -9,8 +9,9 @@ Screen::Screen(TFT_eSPI *tft, const char *title)
 
   _x = 0;
   _y = 0;
-  _w = TFT_WIDTH + 100;
-  _h = TFT_HEIGHT;
+  uint8_t rot = _tft->getRotation();
+  _w = rot == 1 || rot == 3 ? TFT_HEIGHT : TFT_WIDTH;
+  _h = rot == 1 || rot == 3 ? TFT_WIDTH : TFT_HEIGHT;
 }
 
 void Screen::setDelegate(ScreenInterface *delegate)
@@ -42,9 +43,7 @@ void Screen::drawTitleBar()
 void Screen::drawScreen()
 {
   if (_tft == NULL || _onBackground)
-  {
     return;
-  }
 
   uint8_t bWidth = 0; //_border ? UI_BORDER_WIDTH : 0;
   uint32_t offset = _titleBar && !_fullScreen ? TITLE_BAR_HEIGHT + bWidth : 0;
@@ -87,9 +86,13 @@ void Screen::setFullScreen(bool fullScreen)
   _shouldRedraw = true;
 }
 
-void Screen::showScreen(bool forceRedraw, bool titleBar, bool closeBtn, bool onBackground)
+void Screen::setOnBackground(bool onBackground)
 {
   _onBackground = onBackground;
+}
+
+void Screen::showScreen(bool forceRedraw, bool titleBar, bool closeBtn)
+{
   _shouldRedraw = _shouldRedraw || _forceRedraw || forceRedraw;
 
   _titleBar = titleBar;
