@@ -79,7 +79,7 @@ void ToggleButton::draw(bool forceRedraw)
   if (_state)
     _button.setCustomColors(_backONColor, _backONColor, _fontONColor, _fontONColor);
   else
-    _button.setCustomColors(_backOFFColor, _backOFFColor, _fontOFFColor, _fontOFFColor);
+    _button.setCustomColors(_backOFFColor, _backONColor, _fontOFFColor, _fontOFFColor);
 
   _button.setDimensions(0, 0, _w, _h);
   _button.draw(_state ? _labelON : _labelOFF, force);

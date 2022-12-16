@@ -116,6 +116,7 @@ void NumericInput::draw(bool forceRedraw)
     _doneBtn = Button(_tft, "btnDone");
     _doneBtn.setParentViewport(vx, vy, w, h);
     _doneBtn.setDelegate(this);
+    _doneBtn.setCustomColors(COLOR_COMPLEMENTARY_B, COLOR_TERTIARY, COLOR_BLACK, COLOR_BLACK);
   }
   if (!_cancelBtn.isReady())
   {
@@ -191,10 +192,12 @@ void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> stat
   {
     if (!_hasDecimal && strlen(_intPart) < 7)
     {
-      if (btnIndex == 0 && strlen(_intPart) == 0)
+      if (btnIndex == 0 && strlen(_intPart) == 1 && _intPart[0] == '0')
         return;
-
-      sprintf(_intPart, "%s%d", _intPart, btnIndex);
+      if (btnIndex > 0 && strlen(_intPart) == 1 && _intPart[0] == '0')
+        sprintf(_intPart, "%d", btnIndex);
+      else
+        sprintf(_intPart, "%s%d", _intPart, btnIndex);
     }
     else if (_hasDecimal && strlen(_decPart) < 4)
       sprintf(_decPart, "%s%d", _decPart, btnIndex);
@@ -224,6 +227,9 @@ void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> stat
       clearValueLabel();
     }
   }
+
+  if (!_hasDecimal && strlen(_intPart) == 0)
+    sprintf(_intPart, "0");
 
   char value[20];
   getValueLabel(value);
