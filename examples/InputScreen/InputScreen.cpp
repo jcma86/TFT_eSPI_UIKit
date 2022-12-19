@@ -28,6 +28,7 @@
  */
 
 #include "InputScreen.hpp"
+#include <functional>
 
 InputScreen::InputScreen(TFT_eSPI *tft, const char *title) : Screen(tft, title)
 {
@@ -45,6 +46,9 @@ void InputScreen::updateState()
 
   if (_showNumericImputBtn.isReady())
     _showNumericImputBtn.updateState();
+
+  if (_pBar.isReady())
+    _pBar.updateState();
 }
 
 void InputScreen::drawContent()
@@ -68,9 +72,20 @@ void InputScreen::drawContent()
     _showNumericImputBtn.setParentViewport(_contentX, _contentY, _contentW, _contentH);
     _showNumericImputBtn.setDelegate(this);
   }
+  if (!_pBar.isReady())
+  {
+    _pBar = ProgressBar(_tft, "Progress");
+    _pBar.setGradientColor(COLOR_COMPLEMENTARY_A, COLOR_GREEN);
+    _pBar.setParentViewport(0, 0, 320, 240);
+    _pBar.setDimensions(30, 160, 260, 20);
+    _pBar.setRange(-100.0, 100.0);
+    _pBar.setValue(0.0);
+    // _pBar.hidePercent();
+  }
 
   _showNumericImputBtn.setDimensions(100, 90, 120, 35);
   _showNumericImputBtn.draw("Num Input", _shouldRedraw);
+  _pBar.draw(_shouldRedraw);
 }
 
 // Interfaces
@@ -78,22 +93,22 @@ void InputScreen::onButtonTouch(const char *id)
 {
   if (strcmp(id, "btnShowNumInput") == 0 && _numericInput.isReady())
   {
+    auto f = std::bind(&ProgressBar::setValue, &_pBar, std::placeholders::_1);
     _onBackground = true;
-    _numericInput.show(true);
+    _numericInput.showWithSetter(f);
   }
 }
 
 void InputScreen::onInputComplete(const char *btnId, const char *value)
 {
-  Serial.printf("Value -> %s\n", value);
-  _numericInput.show(false);
+  _numericInput.hide();
   _onBackground = false;
   _forceRedraw = true;
 }
 
 void InputScreen::onInputCancel(const char *btnId)
 {
-  _numericInput.show(false);
+  _numericInput.hide();
   _onBackground = false;
   _forceRedraw = true;
 }

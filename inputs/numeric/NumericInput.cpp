@@ -44,10 +44,28 @@ void NumericInput::setInitialValue(float initialValue)
   _shouldRedraw = true;
 }
 
-void NumericInput::show(bool isVisible)
+void NumericInput::show(float *output)
 {
-  _isVisible = isVisible;
-  _shouldRedraw = isVisible;
+  _output = output;
+  _setter = NULL;
+  _isVisible = true;
+  _shouldRedraw = true;
+}
+
+void NumericInput::hide()
+{
+  _output = NULL;
+  _setter = NULL;
+  _isVisible = false;
+  _shouldRedraw = false;
+}
+
+void NumericInput::showWithSetter(std::function<void(float)> setterFunc)
+{
+  _setter = setterFunc;
+  _output = NULL;
+  _isVisible = true;
+  _shouldRedraw = true;
 }
 
 void NumericInput::updateState()
@@ -171,19 +189,27 @@ void NumericInput::clearValueLabel()
 // Interfaces
 void NumericInput::onButtonTouch(const char *id)
 {
-  if (!_delegate)
-    return;
-
   if (strcmp(id, "btnDone") == 0)
   {
     char value[20];
     getValueLabel(value);
-    _delegate->onInputComplete(_id, value);
+    if (_output)
+      (*_output) = atof(value);
+    if (_setter)
+      _setter(atof(value));
+    if (_delegate)
+      _delegate->onInputComplete(_id, value);
   }
   if (strcmp(id, "btnCancel") == 0)
   {
-    _delegate->onInputCancel(_id);
+    if (_delegate)
+      _delegate->onInputCancel(_id);
   }
+
+  _isVisible = false;
+  _setter = NULL;
+  _output = NULL;
+  _shouldRedraw = false;
 }
 
 void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> states)

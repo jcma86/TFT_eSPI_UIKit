@@ -9,6 +9,8 @@
 #include "../../buttons/switchGroup/SwitchGroupInterface.hpp"
 #include "../InputInterface.hpp"
 
+// typedef void (*setValueFunc)(float);
+
 class NumericInput : public BaseComponent, public SwitchGroupInterface, public ButtonInterface
 {
 private:
@@ -16,6 +18,8 @@ private:
   float _initialValue;
   char _intPart[10];
   char _decPart[7];
+  float *_output = NULL;
+  std::function<void(float)> _setter = NULL;
 
   bool _isNegative = false;
   bool _hasDecimal = false;
@@ -42,7 +46,9 @@ public:
 
   void updateState();
   void draw(bool forceRedraw = false);
-  void show(bool isVisible = true);
+  void hide();
+  void show(float *output = NULL);
+  void showWithSetter(std::function<void(float)> setterFunc);
 };
 
 #endif

@@ -6,9 +6,23 @@ ProgressBar::ProgressBar(TFT_eSPI *tft, const char *id) : BaseComponent(tft, id)
   _shouldRedraw = true;
 }
 
+void ProgressBar::hidePercent(bool hidePercent)
+{
+  _hidePercent = hidePercent;
+  _shouldRedraw = true;
+}
+
+void ProgressBar::setRange(float min, float max)
+{
+  _min = min < max ? min : max;
+  _max = max > min ? max : min;
+  _shouldRedraw = true;
+}
+
 void ProgressBar::setValue(float value)
 {
-  _value = value;
+  _value = value > _max ? _max : value;
+  _value = value < _min ? _min : value;
   _shouldRedraw = true;
 }
 
@@ -82,20 +96,25 @@ void ProgressBar::draw(bool forceRedraw)
   _tft->resetViewport();
   _tft->setViewport(_vX, _vY, _vW, _vH, false);
 
-  char percent[7];
-  sprintf(percent, "%.1f %%", _value);
-  int16_t fillTo = (_value * (_w - 2)) / 100.0;
+  float percentVal = (100.0 / (_max - _min) * (_value - _min));
+  int16_t fillTo = (percentVal * (_w - 2)) / 100.0;
 
   _tft->drawRect(_x, _y, _w, _h, _borderColor);
   _tft->fillRectHGradient(_x + 1, _y + 1, fillTo, _h - 2, _startColor, _endColor);
 
-  _tft->loadFont(PROGRESS_BAR_FONT_FAMILY);
-  _tft->setTextColor(_fontColor);
-  _tft->setTextDatum(MC_DATUM);
+  if (!_hidePercent)
+  {
+    char percent[10];
+    sprintf(percent, "%.1f %%", percentVal);
 
-  _tft->drawString(percent, _x + (_w / 2), _y + (_h / 2) + 2);
+    _tft->loadFont(PROGRESS_BAR_FONT_FAMILY);
+    _tft->setTextColor(_fontColor);
+    _tft->setTextDatum(MC_DATUM);
 
-  _tft->unloadFont();
+    _tft->drawString(percent, _x + (_w / 2), _y + (_h / 2) + 2);
+
+    _tft->unloadFont();
+  }
 
   _shouldRedraw = false;
 }

@@ -44,6 +44,7 @@ private:
 
   NumericInput _numericInput;
   Button _showNumericImputBtn;
+  ProgressBar _pBar;
   // Interfaces
   // void onScreenClose(const char *id);
   void onButtonTouch(const char *id);

@@ -6,7 +6,10 @@
 class ProgressBar : public BaseComponent
 {
 private:
+  bool _hidePercent = false;
   float _value = 0.0;
+  float _min = 0.0;
+  float _max = 100.0;
   COLOR _startColor = PROGRESS_BAR_COLOR_A;
   COLOR _endColor = PROGRESS_BAR_COLOR_B;
   COLOR _borderColor = PROGRESS_BAR_BORDER_COLOR;
@@ -17,6 +20,8 @@ public:
   ~ProgressBar() {}
   ProgressBar(TFT_eSPI *tft, const char *id);
 
+  void hidePercent(bool hidePercent = true);
+  void setRange(float min = 0.0, float max = 100.0);
   void setValue(float value = 100.0);
   void setColor(COLOR color);
   void setColor(COLOR color, COLOR fontColor);
