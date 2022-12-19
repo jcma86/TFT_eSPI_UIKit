@@ -13,6 +13,12 @@ void Label::setColor(COLOR color)
   _shouldRedraw = true;
 }
 
+void Label::setFont(const uint8_t font[])
+{
+  _font = (uint8_t *)font;
+  _shouldRedraw = true;
+}
+
 void Label::clearWithColor(COLOR color)
 {
   _tft->resetViewport();
@@ -69,7 +75,7 @@ void Label::draw(bool forceRedraw)
   _tft->resetViewport();
   _tft->setViewport(_vX, _vY, _vW, _vH);
 
-  _tft->loadFont(LABEL_FONT_FAMILY);
+  _tft->loadFont(_font);
   _tft->setTextSize(BUTTON_FONT_SIZE);
   _tft->setTextColor(_color);
 

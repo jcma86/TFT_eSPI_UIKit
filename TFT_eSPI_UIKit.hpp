@@ -26,6 +26,8 @@
 #include "display/meter/MeterBase.hpp"
 #include "display/meter/analog/AnalogMeter.hpp"
 #include "display/meter/digital/DigitalMeter.hpp"
+#include "display/clock/digital/DigitalClock.hpp"
+#include "display/clock/ClockInterface.hpp"
 
 #include "inputs/numeric/NumericInput.hpp"
 #include "inputs/InputInterface.hpp"
@@ -36,5 +38,6 @@
 #include "screen/Screen.hpp"
 #include "screen/ScreenInterface.hpp"
 
-#include "tools/CalibrateTouch.hpp"
+#include "tools/tft/CalibrateTouch.hpp"
+#include "tools/wifi/WiFiConnection.hpp"
 #endif

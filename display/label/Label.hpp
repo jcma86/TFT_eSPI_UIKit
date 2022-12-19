@@ -8,6 +8,7 @@ class Label : public BaseComponent
 private:
   COLOR _color = LABEL_COLOR;
   uint8_t _datum = BL_DATUM;
+  uint8_t *_font = (uint8_t *)LABEL_FONT_FAMILY;
   char _label[100];
 
 public:
@@ -17,6 +18,7 @@ public:
 
   void setColor(COLOR label = LABEL_COLOR);
   void setLabel(const char *label);
+  void setFont(const uint8_t font[]);
   void clearWithColor(COLOR color = SCREEN_BACKGROUND_COLOR);
   void setPosition(int16_t x, uint16_t y, uint8_t datum = BL_DATUM);
 
