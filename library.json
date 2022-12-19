@@ -1,6 +1,6 @@
 {
   "name": "TFT_eSPI_UIKit",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "description": "Set of UI components to create GUI using TFT_eSPI",
   "repository": {
     "type": "git",
@@ -19,6 +19,16 @@
       "owner": "bodmer",
       "name": "TFT_eSPI",
       "version": "^2.4.79"
+    },
+    {
+      "owner": "arduino-libraries",
+      "name": "NTPClient",
+      "version": "^3.2.1"
+    },
+    {
+      "owner": "paulstoffregen",
+      "name": "Time",
+      "version": "^1.6.1"
     }
   ],
   "examples": [
