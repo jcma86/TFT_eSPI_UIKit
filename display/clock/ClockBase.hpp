@@ -52,7 +52,7 @@ protected:
   std::vector<timer_struct> _timers;
   std::vector<alarm_struct> _alarms;
 
-  virtual void updateClockState() = 0;
+  virtual void updateClockState() {}
 
   void onWiFiEvent(arduino_event_id_t event);
   void startTimeClient();
@@ -61,9 +61,10 @@ protected:
 
 public:
   ClockBase() {}
-  ClockBase(TFT_eSPI *tft, const char *id, WiFiConnection *wifi);
+  ClockBase(TFT_eSPI *tft, const char *id);
   virtual ~ClockBase();
 
+  void setWiFi(WiFiConnection *wifi);
   void setNTPServer(const char *serverName);
   void setUpdateInterval(unsigned long updateInterval);
   void setOffset(long offset = 3600 * 3);
@@ -73,10 +74,11 @@ public:
   size_t addAlarm(ClockAlarm alarm, bool repeat);
   void removeTimer(size_t id);
   void removeAlarm(size_t id);
+  unsigned long getCurrentTime();
 
   void setPosition(int16_t x, uint16_t y);
   void updateState();
-  virtual void draw(bool forceRedraw = false) = 0;
+  virtual void draw(bool forceRedraw = false) {}
 };
 
 #endif

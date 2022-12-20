@@ -61,7 +61,8 @@ void ClockScreen::drawContent()
 
   if (!dClock.isReady())
   {
-    dClock = DigitalClock(_tft, "DigitalClockScreen", _wifi);
+    dClock = DigitalClock(_tft, "DigitalClockScreen");
+    dClock.setWiFi(_wifi);
     dClock.setParentViewport(_contentX, _contentY, _contentW, _contentH);
     dClock.setDelegate(this);
     ClockAlarm alarm;

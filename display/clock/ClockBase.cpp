@@ -1,21 +1,22 @@
 #include "ClockBase.hpp"
 
-ClockBase::ClockBase(TFT_eSPI *tft, const char *id, WiFiConnection *wifi) : BaseComponent(tft, id)
+ClockBase::ClockBase(TFT_eSPI *tft, const char *id) : BaseComponent(tft, id)
 {
-  _wifi = wifi;
-  if (_wifi)
-  {
-    _wifi->setDelegate(this);
-    _isReady = true;
-  }
-
   strcpy(_server, "ntp0.ntp-servers.net");
   _shouldRedraw = true;
+  _isReady = true;
 }
 
 ClockBase::~ClockBase()
 {
   releaseTimeClient();
+}
+
+void ClockBase::setWiFi(WiFiConnection *wifi)
+{
+  _wifi = wifi;
+  if (_wifi)
+    _wifi->setDelegate(this);
 }
 
 void ClockBase::startTimeClient()
@@ -50,6 +51,11 @@ void ClockBase::setUpdateInterval(unsigned long updateInterval)
 {
   releaseTimeClient();
   _updateInterval = updateInterval;
+}
+
+unsigned long ClockBase::getCurrentTime()
+{
+  return _currentTime;
 }
 
 void ClockBase::setOffset(long offset)
@@ -168,14 +174,14 @@ void ClockBase::updateState()
     return;
   }
 
-  if (_wifi->getWiFiStatus() != 3)
-  {
-    Serial.println("DigitalClock - No internet connection.");
-    return;
-  }
+  // if (_wifi->getWiFiStatus() != 3)
+  // {
+  //   Serial.println("DigitalClock - No internet connection.");
+  //   return;
+  // }
 
   _currentTime = _lastTime + ((millis() - _lastUpdate) / 1000);
-  if (_timeClient->update())
+  if (_wifi && _wifi->isConnected() && _timeClient->update())
   {
     _lastTime = _timeClient->getEpochTime();
     _lastUpdate = millis();

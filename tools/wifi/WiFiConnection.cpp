@@ -113,25 +113,37 @@ std::vector<callback_struct> WiFiConnection::getCallbacks()
   return _callback;
 }
 
-void WiFiConnection::connectToWiFi(const char *ssid, const char *password)
+void WiFiConnection::init(const char *ssid, const char *password)
 {
+  if (strcmp(_ssid, ssid) != 0 || strcmp(_pass, password) != 0)
+    _init = false;
+
+  if (_init)
+    return;
   strcpy(_ssid, ssid);
   strcpy(_pass, password);
 
-  WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
   WiFi.disconnect();
-
-  int attempts = 0;
+  WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
   WiFi.begin(_ssid, _pass);
-  while (attempts < 3 && WiFi.status() != WL_CONNECTED)
-  {
+  _init = true;
+  _lastAttempt = millis();
+}
+
+void WiFiConnection::connectToWiFi(const char *ssid, const char *password)
+{
+  if (!_init)
+    init(ssid, password);
+
+  if (millis() - _lastAttempt < 500)
+    return;
+
+  if (!isConnected() && WiFi.status() != WL_CONNECTED)
     if (WiFi.status() == WL_CONNECT_FAILED)
     {
       WiFi.begin(_ssid, _pass);
-      attempts++;
+      _lastAttempt = millis();
     }
-    delay(500);
-  }
 }
 
 bool WiFiConnection::isConnected()

@@ -18,7 +18,7 @@ private:
 
 public:
   DigitalClock() {}
-  DigitalClock(TFT_eSPI *tft, const char *id, WiFiConnection *wifi) : ClockBase(tft, id, wifi) {}
+  DigitalClock(TFT_eSPI *tft, const char *id) : ClockBase(tft, id) {}
 
   void set12HourMode(bool is12h = true);
   void showSeconds(bool showSeconds = true);

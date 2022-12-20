@@ -29,6 +29,8 @@ class WiFiConnection
 {
 private:
   bool _isReady = false;
+  bool _init = false;
+  unsigned long _lastAttempt = 0;
   char _ssid[50];
   char _pass[50];
   std::vector<callback_struct> _callback;
@@ -57,6 +59,7 @@ public:
   void removeDelegate(size_t id);
   std::vector<callback_struct> getCallbacks();
   std::vector<delegate_struct> getDelegates();
+  WiFiConnection::init(const char *ssid, const char *password);
   void connectToWiFi(const char *ssid, const char *password);
   bool isConnected();
 };
