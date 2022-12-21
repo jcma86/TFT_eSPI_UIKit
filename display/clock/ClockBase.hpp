@@ -43,6 +43,7 @@ protected:
   unsigned long _currentTime = 0;
   unsigned long _lastUpdate = 0;
   long _offset = 3600 * 3;
+  size_t _wifiDelegateId;
 
   int _h;
   int _m;

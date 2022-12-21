@@ -58,13 +58,20 @@ std::vector<delegate_struct> WiFiConnection::getDelegates()
   return _delegate;
 }
 
-size_t WiFiConnection::setDelegate(WiFiConnectionInterface *delegate)
+size_t WiFiConnection::setDelegate(WiFiConnectionInterface *delegate, const char *subscriber)
 {
+  for (size_t i = 0; i < _delegate.size(); i += 1)
+  {
+    if (strcmp(subscriber, _delegate[i].subscriber) == 0)
+      return i;
+  }
+
   size_t id = _delegate.size();
   delegate_struct del;
 
   del.id = id;
   del.delegate = delegate;
+  strcpy(del.subscriber, subscriber);
   _delegate.push_back(del);
 
   return id;
@@ -72,7 +79,6 @@ size_t WiFiConnection::setDelegate(WiFiConnectionInterface *delegate)
 
 void WiFiConnection::removeDelegate(size_t id)
 {
-
   for (size_t i = 0; i < _delegate.size(); i += 1)
   {
     if (_delegate[i].id == id)
@@ -81,6 +87,26 @@ void WiFiConnection::removeDelegate(size_t id)
       break;
     }
   }
+}
+
+size_t WiFiConnection::setCallback(onWiFiEventCallback callback, const char *subscriber)
+{
+  for (size_t i = 0; i < _callback.size(); i += 1)
+  {
+    if (strcmp(subscriber, _callback[i].subscriber) == 0)
+      return i;
+  }
+
+  size_t id = _callback.size();
+  callback_struct cal;
+
+  cal.id = id;
+  cal.callback = callback;
+  strcpy(cal.subscriber, subscriber);
+
+  _callback.push_back(cal);
+
+  return id;
 }
 
 void WiFiConnection::removeCallback(size_t id)
@@ -93,19 +119,6 @@ void WiFiConnection::removeCallback(size_t id)
       break;
     }
   }
-}
-
-size_t WiFiConnection::setCallback(onWiFiEventCallback callback)
-{
-  size_t id = _callback.size();
-  callback_struct cal;
-
-  cal.id = id;
-  cal.callback = callback;
-
-  _callback.push_back(cal);
-
-  return id;
 }
 
 std::vector<callback_struct> WiFiConnection::getCallbacks()

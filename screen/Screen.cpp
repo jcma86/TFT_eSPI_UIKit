@@ -4,6 +4,7 @@ Screen::Screen(TFT_eSPI *tft, const char *title)
 {
   _tft = tft;
   strcpy(_title, title);
+  strcpy(_id, title);
 
   _shouldRedraw = true;
 

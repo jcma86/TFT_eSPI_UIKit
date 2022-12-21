@@ -28,7 +28,7 @@ class Screen
 protected:
   TFT_eSPI *_tft = NULL;
   WiFiConnection *_wifi = NULL;
-  string _id;
+  char _id[50];
   ScreenInterface *_delegate = NULL;
 
   bool _onBackground = false;

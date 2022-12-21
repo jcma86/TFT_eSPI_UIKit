@@ -10,13 +10,15 @@ ClockBase::ClockBase(TFT_eSPI *tft, const char *id) : BaseComponent(tft, id)
 ClockBase::~ClockBase()
 {
   releaseTimeClient();
+  if (_wifi)
+    _wifi->removeDelegate(_wifiDelegateId);
 }
 
 void ClockBase::setWiFi(WiFiConnection *wifi)
 {
   _wifi = wifi;
   if (_wifi)
-    _wifi->setDelegate(this);
+    _wifiDelegateId = _wifi->setDelegate(this, _id);
 }
 
 void ClockBase::startTimeClient()
@@ -196,6 +198,9 @@ void ClockBase::updateState()
 // Interface
 void ClockBase::onWiFiEvent(arduino_event_id_t event)
 {
+  Serial.print(_id);
+  Serial.print(" --> WiFi Event: ");
+  Serial.println(_wifi->getEventDescription(event));
   startTimeClient();
   _shouldRedraw = true;
 }

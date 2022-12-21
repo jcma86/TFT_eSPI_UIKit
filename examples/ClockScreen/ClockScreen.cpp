@@ -36,7 +36,7 @@ ClockScreen::ClockScreen(TFT_eSPI *tft, WiFiConnection *wifi, const char *title)
   _shouldRedraw = true;
   _wifi = wifi;
   if (_wifi)
-    _wifiId = _wifi->setDelegate(this);
+    _wifiId = _wifi->setDelegate(this, _id);
 }
 
 ClockScreen::~ClockScreen()

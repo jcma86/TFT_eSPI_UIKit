@@ -16,12 +16,14 @@ public:
 typedef struct
 {
   size_t id;
+  char subscriber[50];
   WiFiConnectionInterface *delegate;
 } delegate_struct;
 
 typedef struct
 {
   size_t id;
+  char subscriber[50];
   onWiFiEventCallback callback;
 } callback_struct;
 
@@ -53,8 +55,8 @@ public:
   const char *getEventDescription(arduino_event_id_t event);
   wl_status_t getWiFiStatus();
   const char *getWiFiStatusDescription(wl_status_t status = WiFi.status());
-  size_t setDelegate(WiFiConnectionInterface *delegate);
-  size_t setCallback(onWiFiEventCallback callback);
+  size_t setDelegate(WiFiConnectionInterface *delegate, const char *subscriber);
+  size_t setCallback(onWiFiEventCallback callback, const char *subscriber);
   void removeCallback(size_t id);
   void removeDelegate(size_t id);
   std::vector<callback_struct> getCallbacks();
