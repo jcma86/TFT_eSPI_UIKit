@@ -1,6 +1,6 @@
 {
   "name": "TFT_eSPI_UIKit",
-  "version": "0.1.34",
+  "version": "0.1.35",
   "description": "Set of UI components to create GUI using TFT_eSPI",
   "repository": {
     "type": "git",

@@ -59,7 +59,7 @@ public:
   void removeDelegate(size_t id);
   std::vector<callback_struct> getCallbacks();
   std::vector<delegate_struct> getDelegates();
-  WiFiConnection::init(const char *ssid, const char *password);
+  void init(const char *ssid, const char *password);
   void connectToWiFi(const char *ssid, const char *password);
   bool isConnected();
 };
