@@ -24,9 +24,13 @@ void ClockBase::startTimeClient()
   if (_timeClient)
     releaseTimeClient();
 
-  _timeClient = new NTPClient(_ntpUDP, _server, _offset, _updateInterval);
-  _timeClient->end();
-  _timeClient->begin();
+  if (_wifi && _wifi->isConnected())
+  {
+    _timeClient = new NTPClient(_ntpUDP, _server, _offset, _updateInterval);
+    _timeClient->end();
+    _timeClient->begin();
+  }
+
   _started = true;
 }
 
@@ -174,12 +178,6 @@ void ClockBase::updateState()
     return;
   }
 
-  // if (_wifi->getWiFiStatus() != 3)
-  // {
-  //   Serial.println("DigitalClock - No internet connection.");
-  //   return;
-  // }
-
   _currentTime = _lastTime + ((millis() - _lastUpdate) / 1000);
   if (_wifi && _wifi->isConnected() && _timeClient->update())
   {
@@ -198,7 +196,6 @@ void ClockBase::updateState()
 // Interface
 void ClockBase::onWiFiEvent(arduino_event_id_t event)
 {
-  Serial.print("ClockBase - onWiFiEvent -> ");
-  Serial.println(event);
+  startTimeClient();
   _shouldRedraw = true;
 }
