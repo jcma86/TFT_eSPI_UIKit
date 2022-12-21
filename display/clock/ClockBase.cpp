@@ -14,6 +14,21 @@ ClockBase::~ClockBase()
     _wifi->removeDelegate(_wifiDelegateId);
 }
 
+void ClockBase::setManualTime(int h, int m, int s, int day, int month, int year)
+{
+  releaseTimeClient();
+  setTime(h, m, s, day, month, year);
+  _manual = true;
+  _started = true;
+  _shouldRedraw = true;
+}
+
+void ClockBase::setAutomaticTime()
+{
+  _manual = false;
+  _shouldRedraw = true;
+}
+
 void ClockBase::setWiFi(WiFiConnection *wifi)
 {
   _wifi = wifi;
@@ -26,7 +41,7 @@ void ClockBase::startTimeClient()
   if (_timeClient)
     releaseTimeClient();
 
-  if (_wifi && _wifi->isConnected())
+  if (_wifi && _wifi->isConnected() && !_manual)
   {
     _timeClient = new NTPClient(_ntpUDP, _server, _offset, _updateInterval);
     _timeClient->end();
@@ -61,7 +76,7 @@ void ClockBase::setUpdateInterval(unsigned long updateInterval)
 
 unsigned long ClockBase::getCurrentTime()
 {
-  return _currentTime;
+  return now();
 }
 
 void ClockBase::setOffset(long offset)
@@ -149,9 +164,9 @@ void ClockBase::processTimersAndAlarms()
   for (size_t i = 0; i < _alarms.size(); i += 1)
   {
     ClockAlarm alarm = _alarms[i].alarm;
-    if (_alarms[i]._lastTime != _currentTime && alarm.hour == _h && alarm.minute == _m && alarm.second == _s)
+    if (_alarms[i]._lastTime != now() && alarm.hour == _h && alarm.minute == _m && alarm.second == _s)
     {
-      _alarms[i]._lastTime = _currentTime;
+      _alarms[i]._lastTime = now();
       _delegate->onClockAlarm(_id, _alarms[i].id);
       if (!_alarms[i].repeat)
       {
@@ -180,16 +195,12 @@ void ClockBase::updateState()
     return;
   }
 
-  _currentTime = _lastTime + ((millis() - _lastUpdate) / 1000);
-  if (_wifi && _wifi->isConnected() && _timeClient->update())
-  {
-    _lastTime = _timeClient->getEpochTime();
-    _lastUpdate = millis();
-  }
+  if (!_manual && _wifi && _wifi->isConnected() && _timeClient->update())
+    setTime(_timeClient->getEpochTime());
 
-  _h = hour(_currentTime);
-  _m = minute(_currentTime);
-  _s = second(_currentTime);
+  _h = hour();
+  _m = minute();
+  _s = second();
 
   processTimersAndAlarms();
   updateClockState();

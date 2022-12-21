@@ -38,10 +38,8 @@ protected:
   char _server[100];
 
   bool _started = false;
+  bool _manual = false;
   unsigned long _updateInterval = 60000;
-  unsigned long _lastTime = 0;
-  unsigned long _currentTime = 0;
-  unsigned long _lastUpdate = 0;
   long _offset = 3600 * 3;
   size_t _wifiDelegateId;
 
@@ -69,6 +67,9 @@ public:
   void setNTPServer(const char *serverName);
   void setUpdateInterval(unsigned long updateInterval);
   void setOffset(long offset = 3600 * 3);
+
+  void setManualTime(int h, int m, int s, int day, int month, int year);
+  void setAutomaticTime();
 
   void setDelegate(ClockInterface *delegate);
   size_t addTimer(long intervalInSeconds, bool repeat);
