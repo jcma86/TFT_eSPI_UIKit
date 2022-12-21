@@ -14,6 +14,12 @@ Screen::Screen(TFT_eSPI *tft, const char *title)
   _h = rot == 1 || rot == 3 ? TFT_WIDTH : TFT_HEIGHT;
 }
 
+void Screen::setWiFi(WiFiConnection *wifi)
+{
+  _wifi = wifi;
+  _shouldRedraw = true;
+}
+
 void Screen::setDelegate(ScreenInterface *delegate)
 {
   _delegate = delegate;
@@ -37,6 +43,17 @@ void Screen::drawTitleBar()
       _tft->setTextDatum(ML_DATUM);
       _tft->drawString(title, PADDING_NORMAL, (TITLE_BAR_HEIGHT / 2) - 3);
     }
+    if (!_clock.isReady())
+    {
+      _clock = DigitalClock(_tft, "TitleBarClock");
+      _clock.setParentViewport(0, 0, _w, TITLE_BAR_HEIGHT);
+      _clock.setFont(&IBMPlexMono_Regular6pt8b, MR_DATUM);
+      _clock.setColors(TITLE_BAR_FONT_COLOR, TITLE_BAR_COLOR);
+    }
+
+    _clock.setWiFi(_wifi);
+    _clock.setPosition(_w - PADDING_NORMAL, TITLE_BAR_HEIGHT / 2 - 3);
+    _clock.draw(_shouldRedraw);
   }
 }
 
@@ -80,6 +97,12 @@ void Screen::drawScreen()
   drawContent();
 }
 
+void Screen::showTime(bool showTime)
+{
+  _showTime = showTime;
+  _shouldRedraw = true;
+}
+
 void Screen::setFullScreen(bool fullScreen)
 {
   _fullScreen = fullScreen;
@@ -91,6 +114,12 @@ void Screen::setOnBackground(bool onBackground)
   _onBackground = onBackground;
 }
 
+void Screen::screenStateUpdate()
+{
+  if (_clock.isReady())
+    _clock.updateState();
+}
+
 void Screen::showScreen(bool forceRedraw, bool titleBar, bool closeBtn)
 {
   _shouldRedraw = _shouldRedraw || _forceRedraw || forceRedraw;
@@ -98,6 +127,7 @@ void Screen::showScreen(bool forceRedraw, bool titleBar, bool closeBtn)
   _titleBar = titleBar;
   _closeBtn = closeBtn;
 
+  screenStateUpdate();
   updateState();
   drawScreen();
 

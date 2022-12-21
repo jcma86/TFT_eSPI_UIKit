@@ -16,6 +16,14 @@ void Label::setColor(COLOR color)
 void Label::setFont(const uint8_t font[])
 {
   _font = (uint8_t *)font;
+  _isFreeFont = false;
+  _shouldRedraw = true;
+}
+
+void Label::setFont(const GFXfont *font)
+{
+  _fFont = (GFXfont *)font;
+  _isFreeFont = true;
   _shouldRedraw = true;
 }
 
@@ -26,22 +34,29 @@ void Label::clearWithColor(COLOR color)
 
   _tft->loadFont(LABEL_FONT_FAMILY);
   _tft->setTextSize(BUTTON_FONT_SIZE);
-  uint16_t ts = _tft->textWidth(_label);
+  uint16_t tw = _tft->textWidth(_label);
+  uint16_t th = _tft->fontHeight() - 2;
   _tft->unloadFont();
 
-  uint16_t x = _x;
-  uint16_t y = _y;
+  int x = _x;
+  int y = _y;
   if (_datum >= 3 && _datum < 6)
-    y = _y - 8;
+    y = _y - (th / 2 + (th % 2 != 0 ? 1 : 0));
   if (_datum >= 6)
-    y = _y - 16;
+    y = _y - th;
 
   if (_datum == 1 || _datum == 3 || _datum == 4 || _datum == 7)
-    x = _x - (ts / 2);
+    x = _x - (tw / 2);
   if (_datum == 2 || _datum == 5 || _datum == 8 || _datum == 11)
-    x = _x - ts;
+    x = _x - tw;
 
-  _tft->fillRect(x, y, ts, 16, color);
+  y = y < 0 ? 0 : y;
+  x = x < 0 ? 0 : x;
+
+  th = _y + th > _vH ? _vH : th;
+  tw = _x + tw > _vW ? _vW : tw;
+
+  _tft->fillRect(x, y, tw, th, color);
 }
 
 void Label::setLabel(const char *label)
@@ -75,13 +90,20 @@ void Label::draw(bool forceRedraw)
   _tft->resetViewport();
   _tft->setViewport(_vX, _vY, _vW, _vH);
 
-  _tft->loadFont(_font);
   _tft->setTextSize(BUTTON_FONT_SIZE);
   _tft->setTextColor(_color);
-
   _tft->setTextDatum(_datum);
-  _tft->drawString(_label, _x, _y);
-  _tft->unloadFont();
+  if (_isFreeFont)
+  {
+    _tft->setFreeFont(_fFont);
+    _tft->drawString(_label, _x, _y);
+  }
+  else
+  {
+    _tft->loadFont(_font);
+    _tft->drawString(_label, _x, _y);
+    _tft->unloadFont();
+  }
 
   _shouldRedraw = false;
 }

@@ -11,6 +11,8 @@
 #include "../helpers/Colors.hpp"
 #include "../fonts/Fonts.hpp"
 #include "../theme/default.hpp"
+#include "../display/clock/digital/DigitalClock.hpp"
+#include "../tools/wifi/WiFiConnection.hpp"
 
 #ifndef TFT_WIDTH
 #define TFT_WIDTH 320
@@ -25,6 +27,7 @@ class Screen
 {
 protected:
   TFT_eSPI *_tft = NULL;
+  WiFiConnection *_wifi = NULL;
   string _id;
   ScreenInterface *_delegate = NULL;
 
@@ -50,7 +53,11 @@ private:
   char _title[50];
   bool _closeBtn = false;
   bool _titleBar = true;
+  bool _showTime = false;
 
+  DigitalClock _clock;
+
+  void screenStateUpdate();
   void drawScreen();
   void drawTitleBar();
 
@@ -62,8 +69,10 @@ public:
   virtual void handleInterruption(int pin, void *param) {}
 
   void setFullScreen(bool fullScreen = true);
+  void showTime(bool showTime = true);
+  void setWiFi(WiFiConnection *wifi);
   virtual void setDelegate(ScreenInterface *delegate);
-  void setOnBackground(bool onBackground=true);
+  void setOnBackground(bool onBackground = true);
   void showScreen(bool forceRedraw = false, bool titleBar = true, bool closeBtn = true);
 };
 

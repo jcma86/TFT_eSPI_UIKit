@@ -6,6 +6,28 @@ void DigitalClock::set12HourMode(bool is12hourMode)
   _shouldRedraw = true;
 }
 
+void DigitalClock::setFont(const uint8_t font[], uint8_t datum)
+{
+  _font = (uint8_t *)font;
+  _datum = datum;
+  _isFreeFont = false;
+  _shouldRedraw = true;
+}
+
+void DigitalClock::setFont(const GFXfont *font, uint8_t datum)
+{
+  _fFont = (GFXfont *)font;
+  _datum = datum;
+  _isFreeFont = true;
+  _shouldRedraw = true;
+}
+
+void DigitalClock::setColors(COLOR font, COLOR background)
+{
+  _color = font;
+  _backgroundColor = background;
+}
+
 void DigitalClock::showSeconds(bool showSeconds)
 {
   _showSeconds = showSeconds;
@@ -33,7 +55,7 @@ void DigitalClock::updateClockState()
 
   if (strcmp(time, _time) != 0 && _timeLbl.isReady())
   {
-    _timeLbl.clearWithColor(SCREEN_BACKGROUND_COLOR);
+    _timeLbl.clearWithColor(_backgroundColor);
     _timeLbl.setLabel(time);
     strcpy(_time, time);
 
@@ -55,10 +77,16 @@ void DigitalClock::draw(bool forceRedraw)
   if (!_timeLbl.isReady())
   {
     _timeLbl = Label(_tft, "DigitalClock");
-    _timeLbl.setParentViewport(_vX + _x, _vY + _y, _vW, _vH);
-    _timeLbl.setPosition(0, 0, TL_DATUM);
+    _timeLbl.setParentViewport(_vX, _vY, _vW, _vH);
   }
 
-  _timeLbl.draw();
+  if (_isFreeFont)
+    _timeLbl.setFont(_fFont);
+  else
+    _timeLbl.setFont(_font);
+
+  _timeLbl.setColor(_color);
+  _timeLbl.setPosition(_x, _y, _datum);
+  _timeLbl.draw(force);
   _shouldRedraw = false;
 }
