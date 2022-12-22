@@ -42,6 +42,7 @@ public:
   void clearCustomColors();
   void setLabels(const char *labelON, const char *labelOFF);
   bool getState();
+  const char *getLabel(bool onLabel = true);
 
   void updateState();
   void draw(bool forceRedraw = false);

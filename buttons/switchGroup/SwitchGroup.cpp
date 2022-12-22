@@ -84,6 +84,14 @@ void SwitchGroup::addButton(const char *id, const char *label)
   _shouldRedraw = true;
 }
 
+const char *SwitchGroup::getButtonLabel(int btnIndex)
+{
+  if (btnIndex < 0 || btnIndex > (_buttons.size() - 1))
+    return "";
+
+  return _buttons[btnIndex].getLabel();
+}
+
 void SwitchGroup::deleteGroup()
 {
   _buttons.clear();

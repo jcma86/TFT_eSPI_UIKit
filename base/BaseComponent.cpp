@@ -6,6 +6,11 @@ BaseComponent::BaseComponent(TFT_eSPI *tft, const char *id)
   strcpy(_id, id);
 }
 
+const char *BaseComponent::getId()
+{
+  return _id;
+}
+
 bool BaseComponent::isReady()
 {
   return _isReady;

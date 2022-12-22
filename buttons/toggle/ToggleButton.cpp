@@ -43,6 +43,13 @@ void ToggleButton::setLabels(const char *labelON, const char *labelOFF)
   _shouldRedraw = true;
 }
 
+const char *ToggleButton::getLabel(bool onLabel)
+{
+  if (onLabel)
+    return _labelON;
+  return _labelOFF;
+}
+
 bool ToggleButton::getState()
 {
   return _state;

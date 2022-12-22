@@ -20,6 +20,17 @@ void Button::setDelegate(ButtonInterface *delegate)
   _delegate = delegate;
 }
 
+void Button::setLabel(const char *label)
+{
+  strcpy(_label, label);
+  _shouldRedraw = true;
+}
+
+const char *Button::getLabel()
+{
+  return _label;
+}
+
 void Button::setIsEnabled(bool isEnabled)
 {
   _isEnabled = isEnabled;

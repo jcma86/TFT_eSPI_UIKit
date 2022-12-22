@@ -43,6 +43,8 @@ public:
   Button(TFT_eSPI *tft, const char *id, ButtonMode mode = NORMAL);
 
   void setDelegate(ButtonInterface *delegate);
+  void setLabel(const char *label);
+  const char *getLabel();
   void setIsEnabled(bool isEnabled = true);
   void setButtonMode(ButtonMode mode = NORMAL);
   void setCustomColors(COLOR backNormal, COLOR backPressed, COLOR textNormal, COLOR textPressed);

@@ -32,6 +32,7 @@ public:
   void setButtonWidth(uint16_t width);
   void addButton(const char *id, const char *label);
   void deleteGroup();
+  const char *getButtonLabel(int btnIndex);
 
   std::vector<bool> getCurrentState();
 

@@ -16,6 +16,13 @@ class NumericInput : public BaseComponent, public SwitchGroupInterface, public B
 private:
   InputInterface *_delegate = NULL;
   float _initialValue;
+  bool _allowNegative = true;
+  bool _allowDecimal = true;
+  bool _hasMaxLimit = false;
+  bool _hasMinLimit = false;
+  float _minLimit;
+  float _maxLimit;
+  bool _resetKeys = true;
   char _intPart[10];
   char _decPart[7];
   float *_output = NULL;
@@ -41,6 +48,11 @@ public:
   NumericInput() {}
   NumericInput(TFT_eSPI *tft, const char *id);
 
+  void allowDecimal(bool allow = true);
+  void allowNegative(bool allow = true);
+  void setMaxLimit(float max);
+  void setMinLimit(float min);
+  void clearLimits();
   void setDelegate(InputInterface *delegate);
   void setInitialValue(float initialValue);
 
