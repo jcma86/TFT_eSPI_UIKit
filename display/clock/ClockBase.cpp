@@ -14,6 +14,24 @@ ClockBase::~ClockBase()
     _wifi->removeDelegate(_wifiDelegateId);
 }
 
+long ClockBase::secondsToNext(int hr, int mn, int sc)
+{
+  int currentSec = (hour() * SECS_PER_HOUR) + (minute() * SECS_PER_MIN) + (second());
+  int desiredSec = (hr * SECS_PER_HOUR) + (mn * SECS_PER_MIN) + (sc);
+
+  if (desiredSec > currentSec)
+    return desiredSec - currentSec;
+  else if (desiredSec < currentSec)
+    return ((SECS_PER_DAY - currentSec) + desiredSec);
+
+  return 0;
+}
+
+long ClockBase::secondsToAlarm(ClockAlarm alarm)
+{
+  return secondsToNext(alarm.hour, alarm.minute, alarm.second);
+}
+
 void ClockBase::setManualTime(int h, int m, int s, int day, int month, int year)
 {
   releaseTimeClient();
@@ -90,28 +108,25 @@ void ClockBase::setDelegate(ClockInterface *delegate)
   _delegate = delegate;
 }
 
-size_t ClockBase::addTimer(long intervalInSeconds, bool repeat)
+size_t ClockBase::addTimer(ClockTimer timer)
 {
   size_t id = _timers.size();
-  timer_struct timer;
-  timer.id = id;
-  timer.interval = intervalInSeconds;
-  timer.repeat = repeat;
-  timer._lastTime = millis() / 1000;
-  _timers.push_back(timer);
+  timer_struct newTimer;
+  newTimer.id = id;
+  newTimer.timer = timer;
+  newTimer.timer.lastTime = now();
+
+  _timers.push_back(newTimer);
   return id;
 }
 
-size_t ClockBase::addAlarm(ClockAlarm alarm, bool repeat)
+size_t ClockBase::addAlarm(ClockAlarm alarm)
 {
   size_t id = _alarms.size();
   alarm_struct newAlarm;
   newAlarm.id = id;
-  newAlarm.alarm.hour = alarm.hour;
-  newAlarm.alarm.minute = alarm.minute;
-  newAlarm.alarm.second = alarm.second;
-  newAlarm.repeat = repeat;
-  newAlarm._lastTime = 0;
+  newAlarm.alarm = alarm;
+  newAlarm.alarm.lastTime = now();
 
   _alarms.push_back(newAlarm);
   return id;
@@ -146,14 +161,15 @@ void ClockBase::processTimersAndAlarms()
   if (!_delegate)
     return;
 
-  unsigned long mi = millis() / 1000;
+  time_t current = now();
   for (size_t i = 0; i < _timers.size(); i += 1)
   {
-    if (mi - _timers[i]._lastTime >= _timers[i].interval)
+    ClockTimer *timer = &_timers[i].timer;
+    if (current - timer->lastTime >= timer->interval)
     {
-      _timers[i]._lastTime = mi;
+      timer->lastTime = current;
       _delegate->onClockInterval(_id, _timers[i].id);
-      if (!_timers[i].repeat)
+      if (!timer->repeat)
       {
         _timers.erase(_timers.begin() + i);
         i -= 1;
@@ -163,12 +179,13 @@ void ClockBase::processTimersAndAlarms()
 
   for (size_t i = 0; i < _alarms.size(); i += 1)
   {
-    ClockAlarm alarm = _alarms[i].alarm;
-    if (_alarms[i]._lastTime != now() && alarm.hour == _h && alarm.minute == _m && alarm.second == _s)
+    ClockAlarm *alarm = &_alarms[i].alarm;
+    // Serial.println(secondsToAlarm(*alarm));
+    if (alarm->lastTime != now() && secondsToAlarm((*alarm)) <= 0)
     {
-      _alarms[i]._lastTime = now();
+      alarm->lastTime = now();
       _delegate->onClockAlarm(_id, _alarms[i].id);
-      if (!_alarms[i].repeat)
+      if (!alarm->repeat)
       {
         _alarms.erase(_alarms.begin() + i);
         i -= 1;

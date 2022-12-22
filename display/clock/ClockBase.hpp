@@ -13,19 +13,13 @@
 typedef struct
 {
   int id;
-  long interval;
-  bool repeat;
-
-  unsigned long _lastTime;
+  ClockTimer timer;
 } timer_struct;
 
 typedef struct
 {
   int id;
   ClockAlarm alarm;
-  bool repeat;
-
-  unsigned long _lastTime;
 } alarm_struct;
 
 class ClockBase : public BaseComponent, public WiFiConnectionInterface
@@ -72,11 +66,13 @@ public:
   void setAutomaticTime();
 
   void setDelegate(ClockInterface *delegate);
-  size_t addTimer(long intervalInSeconds, bool repeat);
-  size_t addAlarm(ClockAlarm alarm, bool repeat);
+  size_t addTimer(ClockTimer timer);
+  size_t addAlarm(ClockAlarm alarm);
   void removeTimer(size_t id);
   void removeAlarm(size_t id);
   unsigned long getCurrentTime();
+  long secondsToNext(int hour, int min, int sec);
+  long secondsToAlarm(ClockAlarm alarm);
 
   void setPosition(int16_t x, uint16_t y);
   void updateState();

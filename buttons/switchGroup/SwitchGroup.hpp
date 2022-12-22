@@ -30,6 +30,7 @@ public:
   void setStates(std::vector<bool> state);
   void setState(int index, bool state);
   void setButtonWidth(uint16_t width);
+  void setLabel(int btnIndex, const char *label);
   void addButton(const char *id, const char *label);
   void deleteGroup();
   const char *getButtonLabel(int btnIndex);
