@@ -107,13 +107,15 @@ void NumericInput::hide()
 {
   _output = NULL;
   _setter = NULL;
+  _setterStr = NULL;
   _isVisible = false;
   _shouldRedraw = false;
 }
 
-void NumericInput::showWithSetter(std::function<void(float)> setterFunc)
+void NumericInput::showWithSetter(std::function<void(float)> setterFunc, std::function<void(const char *)> setterFuncStr)
 {
   _setter = setterFunc;
+  _setterStr = setterFuncStr;
   _output = NULL;
   _isVisible = true;
   _shouldRedraw = true;
@@ -251,6 +253,8 @@ void NumericInput::onButtonTouch(const char *id)
       (*_output) = atof(value);
     if (_setter)
       _setter(atof(value));
+    if (_setterStr)
+      _setterStr(value);
     if (_delegate)
       _delegate->onInputComplete(_id, value);
   }

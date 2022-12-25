@@ -51,6 +51,7 @@ public:
   void removeCustomColors();
 
   void updateState();
+  void draw(bool forceRedraw = false);
   void draw(const char *label, bool forceRedraw = false);
 };
 

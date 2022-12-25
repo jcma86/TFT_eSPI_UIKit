@@ -10,18 +10,6 @@
 #include "../../tools/wifi/WiFiConnection.hpp"
 #include "ClockInterface.hpp"
 
-typedef struct
-{
-  int id;
-  ClockTimer timer;
-} timer_struct;
-
-typedef struct
-{
-  int id;
-  ClockAlarm alarm;
-} alarm_struct;
-
 class ClockBase : public BaseComponent, public WiFiConnectionInterface
 {
 protected:
@@ -36,6 +24,7 @@ protected:
   unsigned long _updateInterval = 60000;
   long _offset = 3600 * 3;
   size_t _wifiDelegateId;
+  size_t _alarmTimerCounter = 0;
 
   int _h;
   int _m;
@@ -66,17 +55,18 @@ public:
   void setAutomaticTime();
 
   void setDelegate(ClockInterface *delegate);
-  size_t addTimer(ClockTimer timer);
-  size_t addAlarm(ClockAlarm alarm);
+  timer_struct *addTimer(ClockTimer timer, const char *description);
+  alarm_struct *addAlarm(ClockAlarm alarm, const char *description);
   void removeTimer(size_t id);
   void removeAlarm(size_t id);
+  void updateAlarm(size_t id, ClockAlarm alarm);
   unsigned long getCurrentTime();
   long secondsToNext(int hour, int min, int sec);
   long secondsToAlarm(ClockAlarm alarm);
 
   void setPosition(int16_t x, uint16_t y);
   void updateState();
-  virtual void draw(bool forceRedraw = false) {}
+  virtual void draw(bool forceRedraw = false){};
 };
 
 #endif

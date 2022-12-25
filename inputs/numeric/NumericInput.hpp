@@ -27,6 +27,7 @@ private:
   char _decPart[7];
   float *_output = NULL;
   std::function<void(float)> _setter = NULL;
+  std::function<void(const char *)> _setterStr = NULL;
 
   bool _isNegative = false;
   bool _hasDecimal = false;
@@ -60,7 +61,7 @@ public:
   void draw(bool forceRedraw = false);
   void hide();
   void show(float *output = NULL);
-  void showWithSetter(std::function<void(float)> setterFunc);
+  void showWithSetter(std::function<void(float)> setterFunc, std::function<void(const char *)> setterFuncStr = NULL);
 };
 
 #endif

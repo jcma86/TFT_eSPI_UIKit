@@ -15,7 +15,9 @@ public:
   virtual void setDelegate(ButtonInterface *delegate) = 0;
   virtual void setIsEnabled(bool isEnabled = true) = 0;
   virtual void updateState() = 0;
-  virtual void draw(const char *label, bool forceRedraw = false) = 0;
+  virtual void setLabel(const char *label) = 0;
+  virtual void draw(bool forceRedraw = false) = 0;
+  virtual void draw(const char *label, bool forceRedraw = false) {}
 };
 
 #endif

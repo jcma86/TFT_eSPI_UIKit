@@ -19,12 +19,12 @@ long ClockBase::secondsToNext(int hr, int mn, int sc)
   int currentSec = (hour() * SECS_PER_HOUR) + (minute() * SECS_PER_MIN) + (second());
   int desiredSec = (hr * SECS_PER_HOUR) + (mn * SECS_PER_MIN) + (sc);
 
-  if (desiredSec > currentSec)
+  if (currentSec == desiredSec)
+    return 0;
+  else if (desiredSec > currentSec)
     return desiredSec - currentSec;
-  else if (desiredSec < currentSec)
-    return ((SECS_PER_DAY - currentSec) + desiredSec);
 
-  return 0;
+  return ((SECS_PER_DAY - currentSec) + desiredSec);
 }
 
 long ClockBase::secondsToAlarm(ClockAlarm alarm)
@@ -108,28 +108,55 @@ void ClockBase::setDelegate(ClockInterface *delegate)
   _delegate = delegate;
 }
 
-size_t ClockBase::addTimer(ClockTimer timer)
+timer_struct *ClockBase::addTimer(ClockTimer timer, const char *description)
 {
-  size_t id = _timers.size();
+  size_t id = _alarmTimerCounter;
+
   timer_struct newTimer;
   newTimer.id = id;
+  strcpy(newTimer.description, description);
   newTimer.timer = timer;
   newTimer.timer.lastTime = now();
 
   _timers.push_back(newTimer);
-  return id;
+
+  _alarmTimerCounter++;
+  return &_timers[id];
 }
 
-size_t ClockBase::addAlarm(ClockAlarm alarm)
+alarm_struct *ClockBase::addAlarm(ClockAlarm alarm, const char *description)
 {
-  size_t id = _alarms.size();
+  size_t id = _alarmTimerCounter;
+
   alarm_struct newAlarm;
   newAlarm.id = id;
+  strcpy(newAlarm.description, description);
   newAlarm.alarm = alarm;
+  newAlarm.alarm.triggered = false;
   newAlarm.alarm.lastTime = now();
 
   _alarms.push_back(newAlarm);
-  return id;
+
+  _alarmTimerCounter++;
+  return &_alarms[id];
+}
+
+void ClockBase::updateAlarm(size_t id, ClockAlarm alarm)
+{
+  bool found = false;
+  size_t i = 0;
+  for (i = 0; i < _alarms.size(); i += 1)
+  {
+    if (_alarms[i].id == id)
+    {
+      found = true;
+      break;
+    }
+  }
+  if (!found)
+    return;
+
+  _alarms[i].alarm = alarm;
 }
 
 void ClockBase::removeTimer(size_t id)
@@ -165,31 +192,32 @@ void ClockBase::processTimersAndAlarms()
   for (size_t i = 0; i < _timers.size(); i += 1)
   {
     ClockTimer *timer = &_timers[i].timer;
+    if (!timer->isActive)
+      continue;
+
     if (current - timer->lastTime >= timer->interval)
     {
       timer->lastTime = current;
-      _delegate->onClockInterval(_id, _timers[i].id);
+      _delegate->onClockTimer(_id, &_timers[i]);
       if (!timer->repeat)
-      {
-        _timers.erase(_timers.begin() + i);
-        i -= 1;
-      }
+        timer->isActive = false;
     }
   }
 
   for (size_t i = 0; i < _alarms.size(); i += 1)
   {
     ClockAlarm *alarm = &_alarms[i].alarm;
-    // Serial.println(secondsToAlarm(*alarm));
-    if (alarm->lastTime != now() && secondsToAlarm((*alarm)) <= 0)
+    if (!alarm->isActive)
+      continue;
+
+    bool done = alarm->triggered && current - alarm->lastTime >= alarm->duration;
+    if (alarm->lastTime != now() && (secondsToAlarm((*alarm)) <= 0 || done))
     {
       alarm->lastTime = now();
-      _delegate->onClockAlarm(_id, _alarms[i].id);
-      if (!alarm->repeat)
-      {
-        _alarms.erase(_alarms.begin() + i);
-        i -= 1;
-      }
+      alarm->triggered = !done;
+      _delegate->onClockAlarm(_id, &_alarms[i], done);
+      if (!alarm->repeat && done)
+        alarm->isActive = false;
     }
   }
 }

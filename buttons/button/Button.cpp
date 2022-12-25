@@ -103,6 +103,11 @@ void Button::updateState()
   draw(_label);
 }
 
+void Button::draw(bool forceRedraw)
+{
+  draw(_label, forceRedraw);
+}
+
 void Button::draw(const char *label, bool forceRedraw)
 {
   if (!_isReady || !_isVisible)

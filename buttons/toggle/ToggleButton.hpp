@@ -40,6 +40,7 @@ public:
   void setState(bool state = true);
   void setCustomColors(COLOR backgroundOn, COLOR backgroundOff, COLOR textOn, COLOR textOff);
   void clearCustomColors();
+  void setLabel(const char *label);
   void setLabels(const char *labelON, const char *labelOFF);
   bool getState();
   const char *getLabel(bool onLabel = true);

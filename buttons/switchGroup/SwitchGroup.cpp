@@ -84,11 +84,20 @@ void SwitchGroup::addButton(const char *id, const char *label)
   _shouldRedraw = true;
 }
 
-void SwitchGroup::setLabel(int btnIndex, const char *label) {
+ToggleButton *SwitchGroup::getRefToToggleButton(int btnIndex)
+{
+  if (btnIndex < 0 || btnIndex > (_buttons.size() - 1))
+    return NULL;
+
+  return &_buttons[btnIndex];
+}
+
+void SwitchGroup::setLabel(int btnIndex, const char *label)
+{
   if (btnIndex < 0 || btnIndex > (_buttons.size() - 1))
     return;
 
-    _buttons[btnIndex].setLabels(label, label);
+  _buttons[btnIndex].setLabels(label, label);
 }
 
 const char *SwitchGroup::getButtonLabel(int btnIndex)

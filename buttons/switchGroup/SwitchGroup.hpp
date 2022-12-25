@@ -34,6 +34,7 @@ public:
   void addButton(const char *id, const char *label);
   void deleteGroup();
   const char *getButtonLabel(int btnIndex);
+  ToggleButton *getRefToToggleButton(int btnIndex);
 
   std::vector<bool> getCurrentState();
 
