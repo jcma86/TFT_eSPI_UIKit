@@ -57,13 +57,11 @@ void TestScreen::drawContent()
     {
       normalButton = Button(_tft, "TestScreen_SomeButton");
       normalButton.setParentViewport(_contentX, _contentY, _contentW, _contentH);
-      normalButton.setIsEnabled(true);
     }
     if (!textButton.isReady())
     {
       textButton = Button(_tft, "TestScreen_SomeTextButton", TEXT);
       textButton.setParentViewport(_contentX, _contentY, _contentW, _contentH);
-      textButton.setIsEnabled(true);
     }
     if (!aList.isReady())
     {
@@ -81,7 +79,6 @@ void TestScreen::drawContent()
       toggleButton = ToggleButton(_tft, "Toggle!!");
       toggleButton.setParentViewport(_contentX, _contentY, _contentW, _contentH);
       toggleButton.setLabels("ON", "OFF");
-      textButton.setIsEnabled(true);
     }
 
     if (!progressBar.isReady())
@@ -111,16 +108,20 @@ void TestScreen::drawContent()
     }
 
     normalButton.setDimensions(10, 10, 120, 30);
+    normalButton.setDisabled(_isDisabled);
     normalButton.draw("Button!", _shouldRedraw);
 
     textButton.setDimensions(10, 50, 120, 30);
+    textButton.setDisabled(_isDisabled);
     textButton.draw("Text Button!", _shouldRedraw);
 
     aList.setDimensions(10, 90, 200, 0);
+    aList.setDisabled(_isDisabled);
     aList.setNumOfVisibleRows(3);
     aList.draw(_shouldRedraw);
 
     toggleButton.setDimensions(150, 10, 60, 30);
+    toggleButton.setDisabled(_isDisabled);
     toggleButton.draw(_shouldRedraw);
 
     progressBar.setDimensions(10, 200, 300, 30);

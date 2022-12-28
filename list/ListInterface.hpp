@@ -7,7 +7,7 @@ class ListInterface
 {
 public:
   virtual ~ListInterface() {}
-  virtual void onItemSelect(int itemIndex) = 0;
+  virtual void onItemSelect(int itemIndex, void *ptr = NULL) = 0;
 };
 
 #endif

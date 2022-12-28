@@ -9,7 +9,7 @@ class WiFiConnectionInterface
 {
 public:
   WiFiConnectionInterface() {}
-  virtual ~WiFiConnectionInterface() {}
+  // virtual ~WiFiConnectionInterface() {}
   virtual void onWiFiEvent(arduino_event_id_t event) = 0;
 };
 

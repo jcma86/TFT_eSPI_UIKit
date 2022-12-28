@@ -10,8 +10,18 @@ ClockBase::ClockBase(TFT_eSPI *tft, const char *id) : BaseComponent(tft, id)
 ClockBase::~ClockBase()
 {
   releaseTimeClient();
-  if (_wifi)
-    _wifi->removeDelegate(_wifiDelegateId);
+
+  if (_alarms.size() > 0)
+    for (size_t i = _alarms.size() - 1; i >= 0; i -= 1)
+      delete _alarms[i];
+
+  _alarms.clear();
+
+  if (_timers.size() > 0)
+    for (size_t i = _timers.size() - 1; i >= 0; i -= 1)
+      delete _timers[i];
+
+  _timers.clear();
 }
 
 long ClockBase::secondsToNext(int hr, int mn, int sc)
@@ -45,13 +55,6 @@ void ClockBase::setAutomaticTime()
 {
   _manual = false;
   _shouldRedraw = true;
-}
-
-void ClockBase::setWiFi(WiFiConnection *wifi)
-{
-  _wifi = wifi;
-  if (_wifi)
-    _wifiDelegateId = _wifi->setDelegate(this, _id);
 }
 
 void ClockBase::startTimeClient()
@@ -112,33 +115,33 @@ timer_struct *ClockBase::addTimer(ClockTimer timer, const char *description)
 {
   size_t id = _alarmTimerCounter;
 
-  timer_struct newTimer;
-  newTimer.id = id;
-  strcpy(newTimer.description, description);
-  newTimer.timer = timer;
-  newTimer.timer.lastTime = now();
+  timer_struct *newTimer = new timer_struct;
+  newTimer->id = id;
+  strcpy(newTimer->description, description);
+  newTimer->timer = timer;
+  newTimer->timer.lastTime = now();
 
   _timers.push_back(newTimer);
 
   _alarmTimerCounter++;
-  return &_timers[id];
+  return newTimer;
 }
 
 alarm_struct *ClockBase::addAlarm(ClockAlarm alarm, const char *description)
 {
   size_t id = _alarmTimerCounter;
 
-  alarm_struct newAlarm;
-  newAlarm.id = id;
-  strcpy(newAlarm.description, description);
-  newAlarm.alarm = alarm;
-  newAlarm.alarm.triggered = false;
-  newAlarm.alarm.lastTime = now();
+  alarm_struct *newAlarm = new alarm_struct;
+  newAlarm->id = id;
+  strcpy(newAlarm->description, description);
+  newAlarm->alarm = alarm;
+  newAlarm->alarm.triggered = false;
+  newAlarm->alarm.lastTime = now();
 
   _alarms.push_back(newAlarm);
 
   _alarmTimerCounter++;
-  return &_alarms[id];
+  return newAlarm;
 }
 
 void ClockBase::updateAlarm(size_t id, ClockAlarm alarm)
@@ -147,7 +150,7 @@ void ClockBase::updateAlarm(size_t id, ClockAlarm alarm)
   size_t i = 0;
   for (i = 0; i < _alarms.size(); i += 1)
   {
-    if (_alarms[i].id == id)
+    if (_alarms[i]->id == id)
     {
       found = true;
       break;
@@ -156,14 +159,14 @@ void ClockBase::updateAlarm(size_t id, ClockAlarm alarm)
   if (!found)
     return;
 
-  _alarms[i].alarm = alarm;
+  _alarms[i]->alarm = alarm;
 }
 
 void ClockBase::removeTimer(size_t id)
 {
   for (size_t i = 0; i < _timers.size(); i += 1)
   {
-    if (_timers[i].id == id)
+    if (_timers[i]->id == id)
     {
       _timers.erase(_timers.begin() + i);
       break;
@@ -175,7 +178,7 @@ void ClockBase::removeAlarm(size_t id)
 {
   for (size_t i = 0; i < _alarms.size(); i += 1)
   {
-    if (_alarms[i].id == id)
+    if (_alarms[i]->id == id)
     {
       _alarms.erase(_alarms.begin() + i);
       break;
@@ -191,33 +194,49 @@ void ClockBase::processTimersAndAlarms()
   time_t current = now();
   for (size_t i = 0; i < _timers.size(); i += 1)
   {
-    ClockTimer *timer = &_timers[i].timer;
-    if (!timer->isActive)
+    ClockTimer *timer = &_timers[i]->timer;
+    if (!timer->isEnabled)
       continue;
 
-    if (current - timer->lastTime >= timer->interval)
+    size_t interval = timer->interval;
+    if (timer->units == 1)
+      interval *= SECS_PER_MIN;
+    if (timer->units == 2)
+      interval *= SECS_PER_HOUR;
+    if (timer->units == 3)
+      interval *= SECS_PER_DAY;
+
+    if (current - timer->lastTime >= interval)
     {
       timer->lastTime = current;
-      _delegate->onClockTimer(_id, &_timers[i]);
+      _delegate->onClockTimer(_id, _timers[i], _pointer);
       if (!timer->repeat)
-        timer->isActive = false;
+        timer->isEnabled = false;
     }
   }
 
   for (size_t i = 0; i < _alarms.size(); i += 1)
   {
-    ClockAlarm *alarm = &_alarms[i].alarm;
-    if (!alarm->isActive)
+    ClockAlarm *alarm = &_alarms[i]->alarm;
+    if (!alarm->isEnabled)
       continue;
 
-    bool done = alarm->triggered && current - alarm->lastTime >= alarm->duration;
+    size_t duration = alarm->duration;
+    if (alarm->units == 1)
+      duration *= SECS_PER_MIN;
+    if (alarm->units == 2)
+      duration *= SECS_PER_HOUR;
+    if (alarm->units == 3)
+      duration *= SECS_PER_DAY;
+
+    bool done = alarm->triggered && current - alarm->lastTime >= duration;
     if (alarm->lastTime != now() && (secondsToAlarm((*alarm)) <= 0 || done))
     {
       alarm->lastTime = now();
       alarm->triggered = !done;
-      _delegate->onClockAlarm(_id, &_alarms[i], done);
+      _delegate->onClockAlarm(_id, _alarms[i], done, _pointer);
       if (!alarm->repeat && done)
-        alarm->isActive = false;
+        alarm->isEnabled = false;
     }
   }
 }

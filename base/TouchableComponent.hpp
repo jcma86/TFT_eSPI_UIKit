@@ -15,6 +15,7 @@ private:
   uint16_t _prevTouchX, _prevTouchY;
   bool _onTouchStart = false;
   bool _touchStartedOutside = false;
+  bool _isTouching = false;
 
   unsigned long lastTouch = 0;
   unsigned long currentTouch = 0;
@@ -29,7 +30,9 @@ private:
 public:
   TouchableComponent() {}
   TouchableComponent(TFT_eSPI *tft, const char *id) : BaseComponent(tft, id){};
-  ~TouchableComponent() {}
+  // ~TouchableComponent() {}
+
+  bool isTouching();
 };
 
 #endif

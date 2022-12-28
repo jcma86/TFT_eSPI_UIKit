@@ -11,7 +11,7 @@ bool TouchableComponent::isValidTouch(uint16_t x, uint16_t y)
 
 void TouchableComponent::processTouch()
 {
-  if (!_touchableEnabled)
+  if (!_touchableEnabled || _isDisabled)
     return;
 
   if (millis() - lastTouch < 20)
@@ -28,10 +28,14 @@ void TouchableComponent::processTouch()
     if (isValid && !_onTouchStart)
     {
       currentTouch = millis();
+      _isTouching = true;
       onTouchStart();
     }
     else if (!isValid && !_onTouchStart)
+    {
+      _isTouching = false;
       _touchStartedOutside = true;
+    }
 
     _onTouchStart = true;
   }
@@ -48,7 +52,13 @@ void TouchableComponent::processTouch()
         onTouchCancel();
     }
 
+    _isTouching = false;
     _onTouchStart = false;
     _touchStartedOutside = false;
   }
+}
+
+bool TouchableComponent::isTouching()
+{
+  return (!_touchableEnabled || _isDisabled) ? false : _isTouching;
 }

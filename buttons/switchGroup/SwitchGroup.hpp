@@ -16,8 +16,14 @@ private:
   bool _allowMultiSelection = false;
   std::vector<ToggleButton> _buttons; // TODO: Accept Buttons or ToggleButtons
   uint16_t _btnWidth = 50;
+  int _hPadding = 5;
+  int _vPadding = 5;
+  COLOR _backgroundOn = COLOR_PRIMARY;
+  COLOR _backgroundOff = COLOR_SECONDARY;
+  COLOR _textOn = COLOR_BLACK;
+  COLOR _textOff = COLOR_BLACK;
 
-  void onToggle(const char *btnId, bool state);
+  void onToggle(const char *btnId, bool state, void *ptr = NULL);
 
 public:
   SwitchGroup() {}
@@ -31,7 +37,10 @@ public:
   void setState(int index, bool state);
   void setButtonWidth(uint16_t width);
   void setLabel(int btnIndex, const char *label);
-  void addButton(const char *id, const char *label);
+  void setColumnGap(int gap = 5);
+  void setRowGap(int gap = 5);
+  void addButton(const char *id, const char *label, ButtonMode mode = BUTTON_MODE_NORMAL);
+  void setCustomColors(COLOR backgroundOn, COLOR backgroundOff, COLOR textOn, COLOR textOff);
   void deleteGroup();
   const char *getButtonLabel(int btnIndex);
   ToggleButton *getRefToToggleButton(int btnIndex);

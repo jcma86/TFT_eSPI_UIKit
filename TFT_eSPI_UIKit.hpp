@@ -15,6 +15,8 @@
 #include "buttons/ButtonBase.hpp"
 #include "buttons/ButtonInterface.hpp"
 #include "buttons/button/Button.hpp"
+#include "buttons/stepper/StepperInterface.hpp"
+#include "buttons/stepper/Stepper.hpp"
 #include "buttons/toggle/ToggleButton.hpp"
 #include "buttons/toggle/ToggleButtonInterface.hpp"
 #include "buttons/switchGroup/SwitchGroup.hpp"
@@ -27,6 +29,8 @@
 #include "display/meter/analog/AnalogMeter.hpp"
 #include "display/meter/digital/DigitalMeter.hpp"
 #include "display/clock/ClockBase.hpp"
+#include "display/clock/alarm/AlarmSetter.hpp"
+#include "display/clock/ClockAlarmTimer.hpp"
 #include "display/clock/digital/DigitalClock.hpp"
 #include "display/clock/ClockInterface.hpp"
 

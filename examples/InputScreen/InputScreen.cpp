@@ -84,6 +84,7 @@ void InputScreen::drawContent()
   }
 
   _showNumericImputBtn.setDimensions(100, 90, 120, 35);
+  _showNumericInputBtn.setDisabled(_isDisabled);
   _showNumericImputBtn.draw("Num Input", _shouldRedraw);
   _pBar.draw(_shouldRedraw);
 }

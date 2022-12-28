@@ -14,7 +14,7 @@ private:
   bool _isFreeFont = false;
 
 public:
-  ~Label() {}
+  // ~Label() {}
   Label() {}
   Label(TFT_eSPI *tft, const char *id);
 

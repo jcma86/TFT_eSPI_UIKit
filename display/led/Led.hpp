@@ -11,7 +11,7 @@ private:
   COLOR _colorOff = LED_OFF_COLOR;
 
 public:
-  ~Led() {}
+  // ~Led() {}
   Led() {}
   Led(TFT_eSPI *tft, const char *id);
 

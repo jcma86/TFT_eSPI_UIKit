@@ -41,11 +41,11 @@ private:
 
   void getValueLabel(char *labelOutput);
   void clearValueLabel();
-  void onSwitch(const char *id, int btnIndex, std::vector<bool> states);
-  void onButtonTouch(const char *id);
+  void onSwitch(const char *id, int btnIndex, std::vector<bool> states, void *ptr = NULL);
+  void onButtonTouch(const char *id, void *ptr = NULL);
 
 public:
-  ~NumericInput() {}
+  // ~NumericInput() {}
   NumericInput() {}
   NumericInput(TFT_eSPI *tft, const char *id);
 

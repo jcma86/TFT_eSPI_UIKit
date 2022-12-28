@@ -9,8 +9,8 @@
 
 typedef enum
 {
-  NORMAL,
-  TEXT,
+  BUTTON_MODE_NORMAL,
+  BUTTON_MODE_TEXT,
 } ButtonMode;
 
 class Button : public ButtonBase
@@ -21,16 +21,18 @@ private:
   char _label[30];
 
   ButtonInterface *_delegate = NULL;
-  bool _isEnabled = true;
+  bool _isTouching = false;
   bool _isPressed = false;
   bool _shouldRedraw = false;
-  ButtonMode _mode = NORMAL;
+  ButtonMode _mode = BUTTON_MODE_NORMAL;
   bool _hasCustomColor = false;
 
   COLOR _backNormal;
   COLOR _backPressed;
   COLOR _textNormal;
   COLOR _textPressed;
+  COLOR _backHover = COLOR_BLUE;
+  COLOR _textHover = COLOR_BLACK;
 
   void onTouch();
   void onTouchStart();
@@ -40,13 +42,13 @@ private:
 
 public:
   Button();
-  Button(TFT_eSPI *tft, const char *id, ButtonMode mode = NORMAL);
+  Button(TFT_eSPI *tft, const char *id, ButtonMode mode = BUTTON_MODE_NORMAL);
 
   void setDelegate(ButtonInterface *delegate);
   void setLabel(const char *label);
   const char *getLabel();
-  void setIsEnabled(bool isEnabled = true);
-  void setButtonMode(ButtonMode mode = NORMAL);
+  void setButtonMode(ButtonMode mode = BUTTON_MODE_NORMAL);
+  void setHoverColors(COLOR backHover, COLOR textHover);
   void setCustomColors(COLOR backNormal, COLOR backPressed, COLOR textNormal, COLOR textPressed);
   void removeCustomColors();
 

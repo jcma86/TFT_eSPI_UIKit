@@ -68,18 +68,29 @@ void SwitchGroup::setBehaveAsButtons(bool asButton)
   _shouldRedraw = true;
 }
 
-void SwitchGroup::addButton(const char *id, const char *label)
+void SwitchGroup::addButton(const char *id, const char *label, ButtonMode mode)
 {
   char btnId[80];
   sprintf(btnId, "%d_%s", _buttons.size(), label);
 
-  ToggleButton btn = ToggleButton(_tft, btnId);
-  btn.setParentViewport(_vX, _vY, _vW, _vH);
+  ToggleButton btn = ToggleButton(_tft, btnId, mode);
+  // btn.setParentViewport(_vX, _vY, _vW, _vH);
   btn.setDelegate(this);
+  btn.setButtonMode(mode);
   btn.setLabels(label, label);
   btn.setState(false);
 
   _buttons.push_back(btn);
+
+  _shouldRedraw = true;
+}
+
+void SwitchGroup::setCustomColors(COLOR backgroundOn, COLOR backgroundOff, COLOR textOn, COLOR textOff)
+{
+  _backgroundOn = backgroundOn;
+  _backgroundOff = backgroundOff;
+  _textOn = textOn;
+  _textOff = textOff;
 
   _shouldRedraw = true;
 }
@@ -98,6 +109,17 @@ void SwitchGroup::setLabel(int btnIndex, const char *label)
     return;
 
   _buttons[btnIndex].setLabels(label, label);
+}
+
+void SwitchGroup::setColumnGap(int gap)
+{
+  _hPadding = gap;
+  _shouldRedraw = true;
+}
+void SwitchGroup::setRowGap(int gap)
+{
+  _vPadding = gap;
+  _shouldRedraw = true;
 }
 
 const char *SwitchGroup::getButtonLabel(int btnIndex)
@@ -143,32 +165,34 @@ void SwitchGroup::draw(bool forceRedraw)
 
   int16_t xPos = 0;
   int16_t yPos = 0;
-  int padding = 5;
 
   _tft->resetViewport();
-  _tft->setViewport(_vX, _vY, _vW, _vH);
+  _tft->setViewport(_x + _vX, _y + _vY, _vW, _vH);
 
   for (int i = 0; i < _buttons.size(); i += 1)
   {
-    _buttons[i].setDimensions(_x + xPos, _y + yPos, _btnWidth, BUTTON_HEIGHT);
+    _buttons[i].setDimensions(xPos, yPos, _btnWidth, BUTTON_HEIGHT);
+    _buttons[i].setDisabled(_isDisabled);
+    _buttons[i].setCustomColors(_backgroundOn, _backgroundOff, _textOn, _textOff);
+    _buttons[i].setParentViewport(_x + _vX, _y + _vY, _btnWidth, BUTTON_HEIGHT);
     _buttons[i].draw(force);
 
     if (_horizontal)
     {
-      xPos += padding + _btnWidth;
+      xPos += _hPadding + _btnWidth;
       if ((xPos + _btnWidth) > _w)
       {
         xPos = 0;
-        yPos += padding + BUTTON_HEIGHT;
+        yPos += _vPadding + BUTTON_HEIGHT;
       }
     }
     else
     {
-      yPos += padding + BUTTON_HEIGHT;
+      yPos += _vPadding + BUTTON_HEIGHT;
       if ((yPos + BUTTON_HEIGHT) > _h)
       {
         yPos = 0;
-        xPos += padding + BUTTON_HEIGHT;
+        xPos += _hPadding + BUTTON_HEIGHT;
       }
     }
   }
@@ -177,7 +201,7 @@ void SwitchGroup::draw(bool forceRedraw)
 }
 
 // Toggle Button Interface
-void SwitchGroup::onToggle(const char *btnId, bool state)
+void SwitchGroup::onToggle(const char *btnId, bool state, void *ptr)
 {
   char *token = strtok((char *)btnId, "_");
   int index = atoi(token);
@@ -192,5 +216,5 @@ void SwitchGroup::onToggle(const char *btnId, bool state)
     }
 
   if (_delegate)
-    _delegate->onSwitch(_id, index, getCurrentState());
+    _delegate->onSwitch(_id, index, getCurrentState(), _pointer);
 }

@@ -1,7 +1,8 @@
 #include "ToggleButton.hpp"
 
-ToggleButton::ToggleButton(TFT_eSPI *tft, const char *id) : BaseComponent(tft, id)
+ToggleButton::ToggleButton(TFT_eSPI *tft, const char *id, ButtonMode mode) : BaseComponent(tft, id)
 {
+  _mode = mode;
   _isReady = true;
 }
 
@@ -43,8 +44,15 @@ void ToggleButton::setLabels(const char *labelON, const char *labelOFF)
   _shouldRedraw = true;
 }
 
-void ToggleButton::setLabel(const char *label){
+void ToggleButton::setLabel(const char *label)
+{
   setLabels(label, label);
+}
+
+void ToggleButton::setButtonMode(ButtonMode mode)
+{
+  _mode = mode;
+  _shouldRedraw = true;
 }
 
 const char *ToggleButton::getLabel(bool onLabel)
@@ -81,9 +89,8 @@ void ToggleButton::draw(bool forceRedraw)
   _tft->setViewport(_vX + _x, _vY + _y, _w, _h);
   if (!_button.isReady())
   {
-    _button = Button(_tft, "toogleButton");
+    _button = Button(_tft, "toogleButton", _mode);
     _button.setParentViewport(_x + _vX, _y + _vY, _w, _h);
-    _button.setIsEnabled(true);
     _button.setDelegate(this);
   }
 
@@ -92,18 +99,20 @@ void ToggleButton::draw(bool forceRedraw)
   else
     _button.setCustomColors(_backOFFColor, _backONColor, _fontOFFColor, _fontOFFColor);
 
+  _button.setButtonMode(_mode);
   _button.setDimensions(0, 0, _w, _h);
+  _button.setDisabled(_isDisabled);
   _button.draw(_state ? _labelON : _labelOFF, force);
 
   _shouldRedraw = false;
 }
 
 // Interface
-void ToggleButton::onButtonTouch(const char *btnId)
+void ToggleButton::onButtonTouch(const char *btnId, void *ptr)
 {
   _state = !_state;
   if (_delegate)
-    _delegate->onToggle(_id, _state);
+    _delegate->onToggle(_id, _state, _pointer);
 
   _shouldRedraw = true;
 }

@@ -7,10 +7,10 @@ class ButtonInterface
 {
 public:
   virtual ~ButtonInterface() {}
-  virtual void onButtonTouch(const char *btnId) {}
-  virtual void onButtonTouchStart(const char *btnId) {}
-  virtual void onButtonTouchEnd(const char *btnId) {}
-  virtual void onButtonTouchCancel(const char *btnId) {}
+  virtual void onButtonTouch(const char *btnId, void *ptr = NULL) {}
+  virtual void onButtonTouchStart(const char *btnId, void *ptr = NULL) {}
+  virtual void onButtonTouchEnd(const char *btnId, void *ptr = NULL) {}
+  virtual void onButtonTouchCancel(const char *btnId, void *ptr = NULL) {}
 };
 
 #endif

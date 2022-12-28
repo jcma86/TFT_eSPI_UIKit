@@ -17,10 +17,9 @@ void List::addItem(const char *item)
 {
   char itemId[50];
   sprintf(itemId, "%d_%s", _items.size(), item);
-  Button anItem = Button(_tft, itemId, TEXT);
+  Button anItem = Button(_tft, itemId, BUTTON_MODE_TEXT);
   anItem.setParentViewport(_vX + _x, _vY + _y, _vW + _w, _vH + _h);
   anItem.setDimensions(0, 0, 0, 0);
-  anItem.setIsEnabled(true);
   anItem.setDelegate(this);
   anItem.setIsVisible(false);
 
@@ -45,7 +44,7 @@ void List::setSelectedItem(int index)
   if (prevSelected != _selected)
   {
     if (_delegate)
-      _delegate->onItemSelect(_selected);
+      _delegate->onItemSelect(_selected, _pointer);
     _shouldRedraw = true;
     draw();
   }
@@ -96,14 +95,12 @@ void List::draw(bool forceRedraw)
   {
     btnUp = Button(_tft, "btnUp");
     btnUp.setParentViewport(_vX + _x, _vY + _y, _vW + _w, _vH + _h);
-    btnUp.setIsEnabled(true);
     btnUp.setDelegate(this);
   }
   if (!btnDown.isReady())
   {
     btnDown = Button(_tft, "btnDown");
     btnDown.setParentViewport(_vX + _x, _vY + _y, _vW + _w, _vH + _h);
-    btnDown.setIsEnabled(true);
     btnDown.setDelegate(this);
   }
 
@@ -111,9 +108,11 @@ void List::draw(bool forceRedraw)
   _tft->fillRect(_x + _w - BUTTON_HEIGHT, _y + BUTTON_HEIGHT, BUTTON_HEIGHT, _h - (2 * BUTTON_HEIGHT), LIST_SCROLL_BACKGROUND_COLOR);
 
   btnUp.setDimensions(_w - BUTTON_HEIGHT, 0, BUTTON_HEIGHT, BUTTON_HEIGHT);
+  btnUp.setDisabled(_isDisabled);
   btnUp.draw("\u2191", force);
 
   btnDown.setDimensions(_w - BUTTON_HEIGHT, _h - BUTTON_HEIGHT, BUTTON_HEIGHT, BUTTON_HEIGHT);
+  btnDown.setDisabled(_isDisabled);
   btnDown.draw("\u2193", force);
 
   if (_items.size() > 0)
@@ -129,6 +128,7 @@ void List::draw(bool forceRedraw)
       sprintf(label, " %s", _itemsLabels[index]);
       _items[index].setDimensions(_x, _y + (i * BUTTON_HEIGHT), _w - BUTTON_HEIGHT, BUTTON_HEIGHT);
       _items[index].setIsVisible();
+      _items[index].setDisabled(_isDisabled);
       _items[index].draw(label, force);
     }
   }

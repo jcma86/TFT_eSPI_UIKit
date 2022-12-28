@@ -7,13 +7,12 @@
 #include <WiFiUdp.h>
 
 #include "../../base/BaseComponent.hpp"
-#include "../../tools/wifi/WiFiConnection.hpp"
+#include "ClockAlarmTimer.hpp"
 #include "ClockInterface.hpp"
 
-class ClockBase : public BaseComponent, public WiFiConnectionInterface
+class ClockBase : public BaseComponent
 {
 protected:
-  WiFiConnection *_wifi = NULL;
   NTPClient *_timeClient = NULL;
   WiFiUDP _ntpUDP;
 
@@ -23,7 +22,6 @@ protected:
   bool _manual = false;
   unsigned long _updateInterval = 60000;
   long _offset = 3600 * 3;
-  size_t _wifiDelegateId;
   size_t _alarmTimerCounter = 0;
 
   int _h;
@@ -31,22 +29,23 @@ protected:
   int _s;
 
   ClockInterface *_delegate = NULL;
-  std::vector<timer_struct> _timers;
-  std::vector<alarm_struct> _alarms;
+  std::vector<timer_struct *> _timers;
+  std::vector<alarm_struct *> _alarms;
 
   virtual void updateClockState() {}
+  void willDestroy();
 
-  void onWiFiEvent(arduino_event_id_t event);
   void startTimeClient();
   void releaseTimeClient();
   void processTimersAndAlarms();
 
+  void onWiFiEvent(arduino_event_id_t event);
+
 public:
   ClockBase() {}
   ClockBase(TFT_eSPI *tft, const char *id);
-  virtual ~ClockBase();
+  ~ClockBase();
 
-  void setWiFi(WiFiConnection *wifi);
   void setNTPServer(const char *serverName);
   void setUpdateInterval(unsigned long updateInterval);
   void setOffset(long offset = 3600 * 3);

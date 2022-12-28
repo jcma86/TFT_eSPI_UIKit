@@ -53,8 +53,8 @@ void Label::clearWithColor(COLOR color)
   y = y < 0 ? 0 : y;
   x = x < 0 ? 0 : x;
 
-  th = _y + th > _vH ? _vH : th;
-  tw = _x + tw > _vW ? _vW : tw;
+  th = y + th > _vH ? _vH : th;
+  tw = x + tw > _vW ? _vW : tw;
 
   _tft->fillRect(x, y, tw, th, color);
 }

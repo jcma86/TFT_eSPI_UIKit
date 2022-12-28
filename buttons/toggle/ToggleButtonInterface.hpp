@@ -5,7 +5,7 @@ class ToggleButtonInterface
 {
 public:
   virtual ~ToggleButtonInterface() {}
-  virtual void onToggle(const char *btnId, bool state) = 0;
+  virtual void onToggle(const char *btnId, bool state, void *ptr = NULL) = 0;
 };
 
 #endif

@@ -206,15 +206,19 @@ void NumericInput::draw(bool forceRedraw)
   _valueLbl.draw(force);
 
   _numberBtns.setDimensions(5, 35, w - 10, 80);
+  _numberBtns.setDisabled(_isDisabled);
   _numberBtns.draw(force);
 
   _symbolBtn.setDimensions(5, 105, w - 10, 35);
+  _symbolBtn.setDisabled(_isDisabled);
   _symbolBtn.draw(force);
 
   _doneBtn.setDimensions((w / 2) - 95, 140, 90, 35);
+  _doneBtn.setDisabled(_isDisabled);
   _doneBtn.draw("Done", force);
 
   _cancelBtn.setDimensions((w / 2) + 5, 140, 90, 35);
+  _cancelBtn.setDisabled(_isDisabled);
   _cancelBtn.draw("Cancel", force);
 
   _resetKeys = false;
@@ -243,7 +247,7 @@ void NumericInput::clearValueLabel()
 }
 
 // Interfaces
-void NumericInput::onButtonTouch(const char *id)
+void NumericInput::onButtonTouch(const char *id, void *ptr)
 {
   if (strcmp(id, "btnDone") == 0)
   {
@@ -270,7 +274,7 @@ void NumericInput::onButtonTouch(const char *id)
   _shouldRedraw = false;
 }
 
-void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> states)
+void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> states, void *ptr)
 {
   char backInt[10];
   char backDec[7];

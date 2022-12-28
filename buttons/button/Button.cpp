@@ -11,7 +11,6 @@ Button::Button(TFT_eSPI *tft, const char *id, ButtonMode mode) : ButtonBase(tft,
 
   _isPressed = false;
   _shouldRedraw = true;
-  _isEnabled = true;
   _isReady = true;
 }
 
@@ -29,13 +28,6 @@ void Button::setLabel(const char *label)
 const char *Button::getLabel()
 {
   return _label;
-}
-
-void Button::setIsEnabled(bool isEnabled)
-{
-  _isEnabled = isEnabled;
-  _touchableEnabled = isEnabled;
-  _shouldRedraw = true;
 }
 
 void Button::setButtonMode(ButtonMode mode)
@@ -60,6 +52,13 @@ void Button::setCustomColors(COLOR backNormal, COLOR backPressed, COLOR textNorm
   _shouldRedraw = true;
 }
 
+void Button::setHoverColors(COLOR backHover, COLOR textHover)
+{
+  _backHover = backHover;
+  _textHover = textHover;
+  _shouldRedraw = true;
+}
+
 void Button::removeCustomColors()
 {
   _hasCustomColor = false;
@@ -69,34 +68,38 @@ void Button::removeCustomColors()
 void Button::onTouch()
 {
   if (_delegate)
-    _delegate->onButtonTouch(_id);
+    _delegate->onButtonTouch(_id, _pointer);
+  _isTouching = false;
   setIsPressed(false);
 }
 
 void Button::onTouchStart()
 {
   if (_delegate)
-    _delegate->onButtonTouchStart(_id);
+    _delegate->onButtonTouchStart(_id, _pointer);
+  _isTouching = true;
   setIsPressed();
 }
 
 void Button::onTouchEnd()
 {
   if (_delegate)
-    _delegate->onButtonTouchEnd(_id);
+    _delegate->onButtonTouchEnd(_id, _pointer);
+  _isTouching = false;
   setIsPressed(false);
 }
 
 void Button::onTouchCancel()
 {
   if (_delegate)
-    _delegate->onButtonTouchCancel(_id);
+    _delegate->onButtonTouchCancel(_id, _pointer);
+  _isTouching = false;
   setIsPressed(false);
 }
 
 void Button::updateState()
 {
-  if (!_isReady || !_isEnabled)
+  if (!_isReady)
     return;
 
   processTouch();
@@ -124,18 +127,28 @@ void Button::draw(const char *label, bool forceRedraw)
   COLOR textColor;
   COLOR backColor;
 
-  if (_mode == NORMAL)
+  if (_mode == BUTTON_MODE_NORMAL)
   {
     textColor = _isPressed ? BUTTON_TEXT_COLOR_PRESSED : BUTTON_TEXT_COLOR_NORMAL;
     _tft->setTextDatum(MC_DATUM);
   }
-  if (_mode == TEXT)
+  if (_mode == BUTTON_MODE_TEXT)
   {
     textColor = _isPressed ? TEXT_BUTTON_COLOR_PRESSED : TEXT_BUTTON_COLOR_NORMAL;
     _tft->setTextDatum(ML_DATUM);
   }
 
-  if (_hasCustomColor)
+  if (_isDisabled)
+  {
+    textColor = _textDisabledColor;
+    backColor = _backDisabledColor;
+  }
+  else if (_isTouching)
+  {
+    textColor = _textHover;
+    backColor = _backHover;
+  }
+  else if (_hasCustomColor)
   {
     textColor = _isPressed ? _textPressed : _textNormal;
     backColor = _isPressed ? _backPressed : _backNormal;
@@ -149,13 +162,13 @@ void Button::draw(const char *label, bool forceRedraw)
 
   uint32_t textX = 0;
   uint32_t textY = _h / 2;
-  if (_mode == TEXT)
+  if (_mode == BUTTON_MODE_TEXT)
   {
     if (_hasCustomColor)
       _tft->fillRect(0, 0, _w, _h, backColor);
     textX = 0;
   }
-  if (_mode == NORMAL)
+  if (_mode == BUTTON_MODE_NORMAL)
   {
     _tft->fillRect(0, 0, _w, _h, backColor);
     textX = (_w / 2);

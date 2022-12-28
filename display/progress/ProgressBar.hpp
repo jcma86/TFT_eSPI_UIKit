@@ -17,7 +17,7 @@ private:
 
 public:
   ProgressBar() {}
-  ~ProgressBar() {}
+  // ~ProgressBar() {}
   ProgressBar(TFT_eSPI *tft, const char *id);
 
   void hidePercent(bool hidePercent = true);
