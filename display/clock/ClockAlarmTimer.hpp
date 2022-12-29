@@ -11,7 +11,9 @@ typedef struct
   size_t lastTime = now();
   bool isEnabled = true;
   void *pointer = NULL;
+  char message[50];
 
+  void setMessage(const char *msg) { strcpy(message, msg); };
   void setInterval(int i) { interval = i; }
   void setIntervalUnits(int u) { units = u; }
   void setRepeat(bool r) { repeat = r; }
@@ -28,10 +30,14 @@ typedef struct
   bool isEnabled = true;
   bool triggered = false;
   bool repeat = true;
+  bool startNextTime = true;
 
   size_t lastTime = now();
   size_t duration = 15;
   int units = 1; // [0-3] Sec, Min, Hrs, Days
+
+  char messageStart[30];
+  char messageDone[30];
 
   void *pointer = NULL;
 
@@ -39,6 +45,11 @@ typedef struct
   void setIsEnabled(bool e) { isEnabled = e; }
   void setMinute(int m) { minute = m; }
   void setSecond(int s) { second = s; }
+  void setMessages(const char *start, const char *done)
+  {
+    strcpy(messageStart, start);
+    strcpy(messageDone, done);
+  };
   void setRepeat(bool r) { repeat = r; }
   void setDuration(size_t d) { duration = d; }
   void setPointer(void *p) { pointer = p; }

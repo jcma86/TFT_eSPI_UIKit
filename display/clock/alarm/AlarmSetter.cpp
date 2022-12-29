@@ -13,6 +13,7 @@ AlarmSetter::AlarmSetter(TFT_eSPI *tft, ClockBase *clock, const char *id) : Base
   alarm.units = 2;
   alarm.repeat = true;
   alarm.isEnabled = false;
+  alarm.lastTime = now();
   _alarmStruct = _clock->addAlarm(alarm, id);
 
   _shouldRedraw = true;
@@ -34,6 +35,7 @@ void AlarmSetter::setAlarm(unsigned char h, unsigned char m, unsigned char s, si
   if (!_isReady)
     return;
 
+  _alarmStruct->alarm.lastTime = now();
   _alarmStruct->alarm.hour = h;
   _alarmStruct->alarm.minute = m;
   _alarmStruct->alarm.second = s;
@@ -44,6 +46,11 @@ void AlarmSetter::setAlarm(unsigned char h, unsigned char m, unsigned char s, si
   _alarmStruct->alarm.pointer = ptr;
 
   _shouldRedraw = true;
+}
+
+void AlarmSetter::setAlarmMessages(const char *msgS, const char *msgD)
+{
+  _alarmStruct->alarm.setMessages(msgS, msgD);
 }
 
 void AlarmSetter::setRepeat(bool repeat)
@@ -116,6 +123,10 @@ void AlarmSetter::updateState()
 {
   if (!_isReady)
     return;
+
+  _switchState.setState(0, _alarmStruct->alarm.repeat);
+  _switchState.setState(1, _alarmStruct->alarm.isEnabled);
+  _switchState.setState(2, _alarmStruct->alarm.startNextTime);
 
   _stepH.updateState();
   _stepM.updateState();
@@ -202,13 +213,14 @@ void AlarmSetter::draw(bool forceRedraw)
   {
     _switchState = SwitchGroup(_tft, "AlarmStepper_state");
     _switchState.setParentViewport(_x + _vX, _y + _vY, _w, _h);
-    _switchState.setButtonWidth(77);
+    _switchState.setButtonWidth(47);
     _switchState.setCustomColors(COLOR_GREEN, COLOR_RED, COLOR_BLACK, COLOR_BLACK);
     _switchState.setIsHorizontal();
     _switchState.setAllowMultiSelection();
     _switchState.setDelegate(this);
-    _switchState.addButton("AlarmStepper_repeat", "Rep.");
-    _switchState.addButton("AlarmStepper_active", "Enab.");
+    _switchState.addButton("AlarmStepper_repeat", "Re");
+    _switchState.addButton("AlarmStepper_active", "En");
+    _switchState.addButton("AlarmStepper_next", "Sch");
   }
 
   _stepH.setDisabled(_isDisabled);
@@ -233,6 +245,7 @@ void AlarmSetter::draw(bool forceRedraw)
 
   _switchState.setState(0, _alarmStruct->alarm.repeat);
   _switchState.setState(1, _alarmStruct->alarm.isEnabled);
+  _switchState.setState(2, _alarmStruct->alarm.startNextTime);
 
   _stepH.draw(force);
   _stepM.draw(force);
@@ -257,6 +270,8 @@ void AlarmSetter::onStepperValueChange(const char *id, int prev, int next, void 
     _alarmStruct->alarm.duration = next;
   if (strcmp(id, "AlarmStepper_dm") == 0)
     _alarmStruct->alarm.units = next;
+
+  // _alarmStruct->alarm.lastTime = now();
 }
 
 void AlarmSetter::onSwitch(const char *id, int btnIndex, std::vector<bool> states, void *ptr)
@@ -265,4 +280,8 @@ void AlarmSetter::onSwitch(const char *id, int btnIndex, std::vector<bool> state
     _alarmStruct->alarm.repeat = states[0];
   else if (btnIndex == 1)
     _alarmStruct->alarm.isEnabled = states[1];
+  else if (btnIndex == 2)
+    _alarmStruct->alarm.startNextTime = states[2];
+
+  // _alarmStruct->alarm.lastTime = now();
 }

@@ -37,9 +37,27 @@ long ClockBase::secondsToNext(int hr, int mn, int sc)
   return ((SECS_PER_DAY - currentSec) + desiredSec);
 }
 
+long ClockBase::secondsFromPrev(int hr, int mn, int sc)
+{
+  int currentSec = (hour() * SECS_PER_HOUR) + (minute() * SECS_PER_MIN) + (second());
+  int desiredSec = (hr * SECS_PER_HOUR) + (mn * SECS_PER_MIN) + (sc);
+
+  if (currentSec == desiredSec)
+    return 0;
+  else if (currentSec > desiredSec)
+    return currentSec - desiredSec;
+
+  return ((SECS_PER_DAY - desiredSec) + currentSec);
+}
+
 long ClockBase::secondsToAlarm(ClockAlarm alarm)
 {
   return secondsToNext(alarm.hour, alarm.minute, alarm.second);
+}
+
+long ClockBase::secondsFromAlarm(ClockAlarm alarm)
+{
+  return secondsFromPrev(alarm.hour, alarm.minute, alarm.second);
 }
 
 void ClockBase::setManualTime(int h, int m, int s, int day, int month, int year)
@@ -125,6 +143,19 @@ timer_struct *ClockBase::addTimer(ClockTimer timer, const char *description)
 
   _alarmTimerCounter++;
   return newTimer;
+}
+
+std::vector<alarm_struct *> ClockBase::getActiveAlarms()
+{
+  std::vector<alarm_struct *> alarms;
+
+  for (size_t i = 0; i < _alarms.size(); i += 1)
+  {
+    if (_alarms[i]->alarm.isEnabled)
+      alarms.push_back(_alarms[i]);
+  }
+
+  return alarms;
 }
 
 alarm_struct *ClockBase::addAlarm(ClockAlarm alarm, const char *description)
@@ -229,15 +260,21 @@ void ClockBase::processTimersAndAlarms()
     if (alarm->units == 3)
       duration *= SECS_PER_DAY;
 
-    bool done = alarm->triggered && current - alarm->lastTime >= duration;
-    if (alarm->lastTime != now() && (secondsToAlarm((*alarm)) <= 0 || done))
+    size_t from = secondsFromAlarm(*alarm);
+    size_t to = secondsToAlarm(*alarm);
+
+    bool done = alarm->triggered && from >= duration;
+    bool missed = from < duration && !alarm->triggered && !alarm->startNextTime;
+
+    if (alarm->lastTime != current && (to <= 0 || done || missed))
     {
-      alarm->lastTime = now();
       alarm->triggered = !done;
       _delegate->onClockAlarm(_id, _alarms[i], done, _pointer);
       if (!alarm->repeat && done)
         alarm->isEnabled = false;
     }
+
+    alarm->lastTime = current;
   }
 }
 

@@ -33,7 +33,6 @@ protected:
   std::vector<alarm_struct *> _alarms;
 
   virtual void updateClockState() {}
-  void willDestroy();
 
   void startTimeClient();
   void releaseTimeClient();
@@ -56,12 +55,15 @@ public:
   void setDelegate(ClockInterface *delegate);
   timer_struct *addTimer(ClockTimer timer, const char *description);
   alarm_struct *addAlarm(ClockAlarm alarm, const char *description);
+  std::vector<alarm_struct *> getActiveAlarms();
   void removeTimer(size_t id);
   void removeAlarm(size_t id);
   void updateAlarm(size_t id, ClockAlarm alarm);
   unsigned long getCurrentTime();
   long secondsToNext(int hour, int min, int sec);
   long secondsToAlarm(ClockAlarm alarm);
+  long secondsFromPrev(int hour, int min, int sec);
+  long secondsFromAlarm(ClockAlarm alarm);
 
   void setPosition(int16_t x, uint16_t y);
   void updateState();

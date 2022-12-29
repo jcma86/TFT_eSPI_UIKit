@@ -2,6 +2,7 @@
 #define __UIKIT_DISPLAY_CLOCK_ALARM_SETTER__
 
 #include <vector>
+#include <string.h>
 #include "../ClockAlarmTimer.hpp"
 #include "../ClockBase.hpp"
 #include "../../../buttons/switchGroup/SwitchGroup.hpp"
@@ -37,6 +38,7 @@ public:
 
   void setAlarm(ClockAlarm alarm);
   void setAlarm(unsigned char h, unsigned char m, unsigned char s, size_t duration, int units = 0, bool repeat = true, bool enabled = true, void *ptr = NULL);
+  void setAlarmMessages(const char *msgStart, const char *msgDone);
   void setRepeat(bool repeat = true);
   void setEnabled(bool isEnabled = true);
   void setHour(unsigned char hour);

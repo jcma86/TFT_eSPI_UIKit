@@ -13,8 +13,8 @@ void ToggleButton::setDelegate(ToggleButtonInterface *delegate)
 
 void ToggleButton::setState(bool state)
 {
+  _shouldRedraw = _state != state;
   _state = state;
-  _shouldRedraw = true;
 }
 
 void ToggleButton::clearCustomColors()
@@ -73,16 +73,13 @@ void ToggleButton::updateState()
     return;
 
   _button.updateState();
-  draw(_shouldRedraw);
+  draw();
 }
 
 void ToggleButton::draw(bool forceRedraw)
 {
-  if (!_isReady)
-    return;
-
   bool force = _shouldRedraw || forceRedraw;
-  if (!force)
+  if (!force || !_isReady)
     return;
 
   _tft->resetViewport();
