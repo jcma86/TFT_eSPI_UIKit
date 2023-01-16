@@ -35,7 +35,7 @@
 
 // BUTTON
 #ifndef BUTTON_FONT_FAMILY
-#define BUTTON_FONT_FAMILY LiberationMonoRegular22
+#define BUTTON_FONT_FAMILY &Orbitron_Regular14pt7b
 #endif
 #ifndef BUTTON_FONT_SIZE
 #define BUTTON_FONT_SIZE 1
@@ -96,9 +96,6 @@
 #endif
 
 // PROGRESS_BAR
-#ifndef PROGRESS_BAR_FONT_FAMILY
-#define PROGRESS_BAR_FONT_FAMILY LiberationMonoRegular18
-#endif
 #ifndef PROGRESS_BAR_BORDER_COLOR
 #define PROGRESS_BAR_BORDER_COLOR COLOR_COMPLEMENTARY_B
 #endif
@@ -118,14 +115,6 @@
 #endif
 #ifndef LED_OFF_COLOR
 #define LED_OFF_COLOR COLOR_GREEN
-#endif
-
-// LABEL
-#ifndef LABEL_COLOR
-#define LABEL_COLOR COLOR_DARK_GRAY
-#endif
-#ifndef LABEL_FONT_FAMILY
-#define LABEL_FONT_FAMILY LiberationMonoRegular18
 #endif
 
 // ANALOG METER

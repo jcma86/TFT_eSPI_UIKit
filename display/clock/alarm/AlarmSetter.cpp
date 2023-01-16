@@ -6,13 +6,13 @@ AlarmSetter::AlarmSetter(TFT_eSPI *tft, ClockBase *clock, const char *id) : Base
   _isReady = true;
 
   ClockAlarm alarm;
-  alarm.hour = 8;
+  alarm.hour = 7;
   alarm.minute = 0;
   alarm.second = 0;
-  alarm.duration = 14;
+  alarm.duration = 16;
   alarm.units = 2;
   alarm.repeat = true;
-  alarm.isEnabled = false;
+  alarm.isEnabled = true;
   alarm.lastTime = now();
   _alarmStruct = _clock->addAlarm(alarm, id);
 
@@ -144,8 +144,8 @@ void AlarmSetter::draw(bool forceRedraw)
   if (!force || !_isReady)
     return;
 
-  _w = 170;
-  _h = 110;
+  _w = 200;
+  _h = 120;
 
   _tft->resetViewport();
   _tft->setViewport(_x + _vX, _y + _vY, _w, _h);
@@ -160,7 +160,7 @@ void AlarmSetter::draw(bool forceRedraw)
     _stepH.setRange(0, 23);
     _stepH.setDelegate(this);
     _stepH.setSideMode(true);
-    _stepH.setButtonSize(20);
+    _stepH.setButtonSize(25);
     _stepH.setCustomColors(COLOR_SECONDARY, COLOR_DARK_GRAY, COLOR_BLACK);
   }
   if (!_stepM.isReady())
@@ -171,7 +171,7 @@ void AlarmSetter::draw(bool forceRedraw)
     _stepM.setRange(0, 59);
     _stepM.setDelegate(this);
     _stepM.setSideMode(true);
-    _stepM.setButtonSize(20);
+    _stepM.setButtonSize(25);
     _stepM.setCustomColors(COLOR_SECONDARY, COLOR_DARK_GRAY, COLOR_BLACK);
   }
   if (!_stepS.isReady())
@@ -182,7 +182,7 @@ void AlarmSetter::draw(bool forceRedraw)
     _stepS.setRange(0, 59);
     _stepS.setDelegate(this);
     _stepS.setSideMode(true);
-    _stepS.setButtonSize(20);
+    _stepS.setButtonSize(25);
     _stepS.setCustomColors(COLOR_SECONDARY, COLOR_DARK_GRAY, COLOR_BLACK);
   }
   if (!_stepD.isReady())
@@ -192,7 +192,7 @@ void AlarmSetter::draw(bool forceRedraw)
     _stepD.setRange(0, 1000);
     _stepD.setDelegate(this);
     _stepD.setSideMode(true);
-    _stepD.setButtonSize(20);
+    _stepD.setButtonSize(25);
     _stepD.setCustomColors(COLOR_SECONDARY, COLOR_DARK_GRAY, COLOR_BLACK);
   }
   if (!_stepDM.isReady())
@@ -206,14 +206,14 @@ void AlarmSetter::draw(bool forceRedraw)
     _stepDM.addString("min");
     _stepDM.addString("hrs");
     _stepDM.addString("days");
-    _stepDM.setButtonSize(20);
+    _stepDM.setButtonSize(25);
     _stepDM.setCustomColors(COLOR_SECONDARY, COLOR_DARK_GRAY, COLOR_BLACK);
   }
   if (!_switchState.isReady())
   {
     _switchState = SwitchGroup(_tft, "AlarmStepper_state");
     _switchState.setParentViewport(_x + _vX, _y + _vY, _w, _h);
-    _switchState.setButtonWidth(47);
+    _switchState.setButtonWidth(60);
     _switchState.setCustomColors(COLOR_GREEN, COLOR_RED, COLOR_BLACK, COLOR_BLACK);
     _switchState.setIsHorizontal();
     _switchState.setAllowMultiSelection();
@@ -230,12 +230,12 @@ void AlarmSetter::draw(bool forceRedraw)
   _stepDM.setDisabled(_isDisabled);
   _switchState.setDisabled(_isDisabled);
 
-  _stepH.setDimensions(5, 5, 30, 30);
-  _stepM.setDimensions(60, 5, 30, 30);
-  _stepS.setDimensions(115, 5, 30, 30);
-  _stepD.setDimensions(5, 40, 60, 30);
-  _stepDM.setDimensions(90, 40, 55, 30);
-  _switchState.setDimensions(5, 75, 170, 30);
+  _stepH.setDimensions(5, 5, 35, 35);
+  _stepM.setDimensions(70, 5, 35, 35);
+  _stepS.setDimensions(135, 5, 35, 35);
+  _stepD.setDimensions(5, 45, 70, 35);
+  _stepDM.setDimensions(100, 45, 70, 35);
+  _switchState.setDimensions(5, 85, 190, 35);
 
   _stepH.setValue(_alarmStruct->alarm.hour);
   _stepM.setValue(_alarmStruct->alarm.minute);

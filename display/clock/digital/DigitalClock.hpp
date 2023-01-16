@@ -14,11 +14,7 @@ private:
   Label _timeLbl;
   char _time[15];
   bool _is12h = false;
-  bool _isFreeFont = false;
   bool _showSeconds = false;
-  uint8_t _datum = TL_DATUM;
-  uint8_t *_font = (uint8_t *)LiberationMonoRegular18;
-  GFXfont *_fFont = NULL;
   COLOR _backgroundColor = SCREEN_BACKGROUND_COLOR;
   COLOR _color = COLOR_BLACK;
 
@@ -28,8 +24,6 @@ public:
   DigitalClock() {}
   DigitalClock(TFT_eSPI *tft, const char *id) : ClockBase(tft, id) {}
 
-  void setFont(const uint8_t font[], uint8_t datum);
-  void setFont(const GFXfont *font, uint8_t datum);
   void setColors(COLOR font = COLOR_BLACK, COLOR background = SCREEN_BACKGROUND_COLOR);
   void set12HourMode(bool is12h = true);
   void showSeconds(bool showSeconds = true);

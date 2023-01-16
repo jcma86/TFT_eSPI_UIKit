@@ -43,6 +43,8 @@
 #include "screen/Screen.hpp"
 #include "screen/ScreenInterface.hpp"
 
+#include "tools/notification/Emitter.hpp"
+#include "tools/notification/NotificationCenter.hpp"
 #include "tools/tft/CalibrateTouch.hpp"
 #include "tools/wifi/WiFiConnection.hpp"
 #endif

@@ -139,6 +139,7 @@ void WiFiConnection::init(const char *ssid, const char *password)
   WiFi.disconnect();
   WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
   WiFi.begin(_ssid, _pass);
+  WiFi.setAutoReconnect(true);
   _init = true;
   _lastAttempt = millis();
 }
@@ -167,6 +168,11 @@ bool WiFiConnection::isConnected()
 wl_status_t WiFiConnection::getWiFiStatus()
 {
   return WiFi.status();
+}
+
+IPAddress WiFiConnection::getIP()
+{
+  return WiFi.localIP();
 }
 
 const char *WiFiConnection::getWiFiStatusDescription(wl_status_t status)

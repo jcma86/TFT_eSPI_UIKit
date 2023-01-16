@@ -6,7 +6,7 @@ DigitalMeter::DigitalMeter(TFT_eSPI *tft, const char *id) : MeterBase(tft, id)
   _isReady = true;
 }
 
-void DigitalMeter::setColor(COLOR color)
+void DigitalMeter::setFontColor(COLOR color)
 {
   _color = color;
   _shouldRedraw = true;
@@ -36,7 +36,7 @@ void DigitalMeter::draw(bool forceRedraw)
   _tft->setViewport(_vX, _vY, _vW, _vH);
 
   char value[10];
-  sprintf(value, "%.1lf %s", _value, _units);
+  snprintf(value, 10, "%.1lf %s", _value, _units);
 
   _tft->fillRect(_x - _prevWidth, _y, _prevWidth, 35, SCREEN_BACKGROUND_COLOR);
   _tft->loadFont(DIGITAL_METER_FONT_FAMILY);

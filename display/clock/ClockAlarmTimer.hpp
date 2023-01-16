@@ -30,7 +30,7 @@ typedef struct
   bool isEnabled = true;
   bool triggered = false;
   bool repeat = true;
-  bool startNextTime = true;
+  bool startNextTime = false;
 
   size_t lastTime = now();
   size_t duration = 15;

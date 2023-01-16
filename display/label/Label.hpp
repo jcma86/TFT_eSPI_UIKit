@@ -2,28 +2,25 @@
 #define __UIKIT_DISPLAY_LABEL__
 
 #include "../../base/BaseComponent.hpp"
+#include "LabelStyle.hpp"
 
 class Label : public BaseComponent
 {
 private:
-  COLOR _color = LABEL_COLOR;
-  uint8_t _datum = BL_DATUM;
-  uint8_t *_font = (uint8_t *)LABEL_FONT_FAMILY;
+  COLOR _color = LABEL_FONT_COLOR;
+  COLOR _bgColor = COLOR_WHITE;
   char _label[100];
-  GFXfont *_fFont = NULL;
-  bool _isFreeFont = false;
+  bool _hasBg = false;
 
 public:
-  // ~Label() {}
   Label() {}
   Label(TFT_eSPI *tft, const char *id);
 
-  void setColor(COLOR label = LABEL_COLOR);
   void setLabel(const char *label);
-  void setFont(const uint8_t font[]);
-  void setFont(const GFXfont *font);
+  void setDatum(uint8_t datum = BL_DATUM);
+  void setFontColor(COLOR label = LABEL_FONT_COLOR);
   void clearWithColor(COLOR color = SCREEN_BACKGROUND_COLOR);
-  void setPosition(int16_t x, uint16_t y, uint8_t datum = BL_DATUM);
+  void setPosition(int16_t x, uint16_t y);
 
   void updateState();
   void draw(bool forceRedraw = false);

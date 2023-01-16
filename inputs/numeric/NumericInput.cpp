@@ -69,7 +69,7 @@ void NumericInput::setInitialValue(float initialValue)
   if (!_allowDecimal)
     _initialValue = (int)_initialValue;
   char value[20];
-  sprintf(value, "%.4f", _initialValue);
+  snprintf(value, 20, "%.4f", _initialValue);
   strncpy(_intPart, value, strlen(value) - 5);
   strncpy(_decPart, &value[strlen(value) - 4], 4);
 
@@ -165,7 +165,7 @@ void NumericInput::draw(bool forceRedraw)
     char btn[3];
     for (int i = 0; i < 10; i += 1)
     {
-      sprintf(btn, "%d", i);
+      snprintf(btn, 3, "%d", i);
       _numberBtns.addButton(btn, btn);
     }
   }
@@ -201,8 +201,9 @@ void NumericInput::draw(bool forceRedraw)
   char value[20];
   getValueLabel(value);
   _tft->drawRect(5, 5, w - 10, 25, COLOR_BLACK);
-  _valueLbl.setPosition(w - 12, 10, TR_DATUM);
-  _valueLbl.setLabel(value);
+  _valueLbl.setPosition(w - 12, 10);
+  _valueLbl.setDatum(TR_DATUM);
+      _valueLbl.setLabel(value);
   _valueLbl.draw(force);
 
   _numberBtns.setDimensions(5, 35, w - 10, 80);
@@ -230,11 +231,11 @@ void NumericInput::getValueLabel(char *labelOutput)
   strncpy(labelOutput, "\0", 20);
 
   if (_isNegative)
-    sprintf(labelOutput, "-");
+    strcpy(labelOutput, "-");
 
-  sprintf(labelOutput, "%s%s", labelOutput, _intPart);
+  snprintf(labelOutput, 20, "%s%s", labelOutput, _intPart);
   if (_hasDecimal)
-    sprintf(labelOutput, "%s.%s", labelOutput, _decPart);
+    snprintf(labelOutput, 20, "%s.%s", labelOutput, _decPart);
 }
 
 void NumericInput::clearValueLabel()
@@ -287,12 +288,12 @@ void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> stat
       if (btnIndex == 0 && strlen(_intPart) == 1 && _intPart[0] == '0')
         return;
       if (btnIndex > 0 && strlen(_intPart) == 1 && _intPart[0] == '0')
-        sprintf(_intPart, "%d", btnIndex);
+        snprintf(_intPart, 10, "%d", btnIndex);
       else
-        sprintf(_intPart, "%s%d", _intPart, btnIndex);
+        snprintf(_intPart, 10, "%s%d", _intPart, btnIndex);
     }
     else if (_hasDecimal && strlen(_decPart) < 4)
-      sprintf(_decPart, "%s%d", _decPart, btnIndex);
+      snprintf(_decPart, 7, "%s%d", _decPart, btnIndex);
   }
   else if (strcmp(id, "SymbolsGroup") == 0)
   {
@@ -303,7 +304,7 @@ void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> stat
       if (strlen(_decPart) == 0)
         _hasDecimal = !_hasDecimal;
       if (_hasDecimal && strlen(_intPart) == 0)
-        sprintf(_intPart, "0");
+        strcpy(_intPart, "0");
     }
     else if (strcmp(_symbolBtn.getButtonLabel(btnIndex), "<") == 0)
     {
@@ -321,7 +322,7 @@ void NumericInput::onSwitch(const char *id, int btnIndex, std::vector<bool> stat
   }
 
   if (!_hasDecimal && strlen(_intPart) == 0)
-    sprintf(_intPart, "0");
+    strcpy(_intPart, "0");
 
   char value[20];
   getValueLabel(value);

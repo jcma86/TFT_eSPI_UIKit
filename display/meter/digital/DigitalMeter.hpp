@@ -14,7 +14,7 @@ public:
   DigitalMeter() {}
   DigitalMeter(TFT_eSPI *tft, const char *id);
 
-  void setColor(COLOR color = DIGITAL_METER_FONT_COLOR);
+  void setFontColor(COLOR color = DIGITAL_METER_FONT_COLOR);
   void setDatum(int datum = TR_DATUM);
   void updateState();
   void draw(bool forceRedraw = false);

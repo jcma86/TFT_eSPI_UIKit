@@ -16,7 +16,7 @@ void List::clearList()
 void List::addItem(const char *item)
 {
   char itemId[50];
-  sprintf(itemId, "%d_%s", _items.size(), item);
+  snprintf(itemId, 50, "%d_%s", _items.size(), item);
   Button anItem = Button(_tft, itemId, BUTTON_MODE_TEXT);
   anItem.setParentViewport(_vX + _x, _vY + _y, _vW + _w, _vH + _h);
   anItem.setDimensions(0, 0, 0, 0);
@@ -125,7 +125,7 @@ void List::draw(bool forceRedraw)
       else
         _items[index].setCustomColors(LIST_ITEM_BACKGROUND_COLOR, LIST_ITEM_BACKGROUND_COLOR, LIST_ITEM_TEXT_COLOR, LIST_ITEM_TEXT_COLOR);
       char label[100];
-      sprintf(label, " %s", _itemsLabels[index]);
+      snprintf(label, 100, " %s", _itemsLabels[index]);
       _items[index].setDimensions(_x, _y + (i * BUTTON_HEIGHT), _w - BUTTON_HEIGHT, BUTTON_HEIGHT);
       _items[index].setIsVisible();
       _items[index].setDisabled(_isDisabled);

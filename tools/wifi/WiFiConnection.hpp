@@ -64,6 +64,7 @@ public:
   void init(const char *ssid, const char *password);
   void connectToWiFi(const char *ssid, const char *password);
   bool isConnected();
+  IPAddress getIP();
 };
 
 #endif

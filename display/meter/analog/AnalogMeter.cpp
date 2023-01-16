@@ -51,8 +51,8 @@ void AnalogMeter::draw(bool forceRedraw)
   char minTag[5];
   char maxTag[5];
   _tft->loadFont(ANALOG_METER_UNITS_FONT_FAMILY);
-  sprintf(minTag, "%.0f", _range.min);
-  sprintf(maxTag, "%.0f", _range.max);
+  snprintf(minTag, 5, "%.0f", _range.min);
+  snprintf(maxTag, 5, "%.0f", _range.max);
   int tw = _tft->textWidth(strlen(minTag) > strlen(maxTag) ? minTag : maxTag);
   _tft->unloadFont();
 
@@ -151,7 +151,7 @@ void AnalogMeter::draw(bool forceRedraw)
       if (currentMark % _stepLabel == 0 && lastMark != currentMark)
       {
         char valLabel[10];
-        sprintf(valLabel, "%d", currentMark);
+        snprintf(valLabel, 10, "%d", currentMark);
 
         // Calculate label positions
         x0 = _x + (sx * (arcRadius + tl + 14) + xCircCenter);

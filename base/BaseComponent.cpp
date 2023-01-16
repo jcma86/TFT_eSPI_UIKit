@@ -34,6 +34,24 @@ void BaseComponent::setWiFi(WiFiConnection *wifi)
     _wifiDelegateId = _wifi->setDelegate(this, _id);
 }
 
+void BaseComponent::setFont(const GFXfont *font)
+{
+  _font = (GFXfont *)font;
+  _shouldRedraw = true;
+}
+
+void BaseComponent::setDatum(uint8_t datum)
+{
+  _datum = datum;
+  _shouldRedraw = true;
+}
+
+void BaseComponent::setFontScale(uint8_t scale)
+{
+  _fontScale = scale;
+  _shouldRedraw = true;
+}
+
 void BaseComponent::setPointer(void *ptr)
 {
   _pointer = ptr;
@@ -46,8 +64,14 @@ void *BaseComponent::getPointer()
 
 void BaseComponent::setDisabled(bool isDisabled)
 {
-  _isDisabled = isDisabled;
+  if(_isDisabled != isDisabled)
   _shouldRedraw = true;
+  
+  _isDisabled = isDisabled;
+}
+
+bool BaseComponent::isEnabled(){
+  return !_isDisabled;
 }
 
 void BaseComponent::setDisabledColors(COLOR _backColor, COLOR _textColor)

@@ -13,6 +13,7 @@
 #include "StepperInterface.hpp"
 
 #include "../../helpers/Colors.hpp"
+#include "StepperStyle.hpp"
 #include "../../theme/default.hpp"
 
 class Stepper : public BaseComponent, public ButtonInterface
@@ -25,6 +26,7 @@ private:
   int _min = 0;
   int _max = 100;
   int _current = -1;
+  int _prev = -1;
   bool _vertical = false;
   bool _repeating = false;
   bool _cycle = true;

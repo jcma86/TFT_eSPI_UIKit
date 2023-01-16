@@ -71,7 +71,7 @@ void SwitchGroup::setBehaveAsButtons(bool asButton)
 void SwitchGroup::addButton(const char *id, const char *label, ButtonMode mode)
 {
   char btnId[80];
-  sprintf(btnId, "%d_%s", _buttons.size(), label);
+  snprintf(btnId, 30, "%d_%s", _buttons.size(), label);
 
   ToggleButton btn = ToggleButton(_tft, btnId, mode);
   // btn.setParentViewport(_vX, _vY, _vW, _vH);
@@ -169,12 +169,14 @@ void SwitchGroup::draw(bool forceRedraw)
   _tft->resetViewport();
   _tft->setViewport(_x + _vX, _y + _vY, _vW, _vH);
 
+  std::vector<bool> states = getCurrentState();
   for (int i = 0; i < _buttons.size(); i += 1)
   {
     _buttons[i].setDimensions(xPos, yPos, _btnWidth, BUTTON_HEIGHT);
     _buttons[i].setDisabled(_isDisabled);
     _buttons[i].setCustomColors(_backgroundOn, _backgroundOff, _textOn, _textOff);
     _buttons[i].setParentViewport(_x + _vX, _y + _vY, _btnWidth, BUTTON_HEIGHT);
+    _buttons[i].setState(states[i]);
     _buttons[i].draw(force);
 
     if (_horizontal)

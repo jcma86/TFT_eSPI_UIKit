@@ -9,6 +9,7 @@ Button::Button(TFT_eSPI *tft, const char *id, ButtonMode mode) : ButtonBase(tft,
 {
   _mode = mode;
 
+  setFont(&FreeMonoBold12pt7b);
   _isPressed = false;
   _shouldRedraw = true;
   _isReady = true;
@@ -56,6 +57,18 @@ void Button::setHoverColors(COLOR backHover, COLOR textHover)
 {
   _backHover = backHover;
   _textHover = textHover;
+  _shouldRedraw = true;
+}
+
+void Button::setShadow(bool hasShadow)
+{
+  _hasShadow = hasShadow;
+  _shouldRedraw = true;
+}
+
+void Button::setRadius(uint8_t radius)
+{
+  _radius = radius;
   _shouldRedraw = true;
 }
 
@@ -127,15 +140,21 @@ void Button::draw(const char *label, bool forceRedraw)
   COLOR textColor;
   COLOR backColor;
 
+  if (!_btnLabel.isReady())
+  {
+    _btnLabel = Label(_tft, "btn_Label");
+    _btnLabel.setParentViewport(_vX + _x, _vY + _y, _w, _h);
+  }
+
   if (_mode == BUTTON_MODE_NORMAL)
   {
     textColor = _isPressed ? BUTTON_TEXT_COLOR_PRESSED : BUTTON_TEXT_COLOR_NORMAL;
-    _tft->setTextDatum(MC_DATUM);
+    _datum = MC_DATUM;
   }
   if (_mode == BUTTON_MODE_TEXT)
   {
     textColor = _isPressed ? TEXT_BUTTON_COLOR_PRESSED : TEXT_BUTTON_COLOR_NORMAL;
-    _tft->setTextDatum(ML_DATUM);
+    _datum = ML_DATUM;
   }
 
   if (_isDisabled)
@@ -156,28 +175,29 @@ void Button::draw(const char *label, bool forceRedraw)
   else
     backColor = _isPressed ? BUTTON_BACKGROUND_COLOR_PRESSED : BUTTON_BACKGROUND_COLOR_NORMAL;
 
-  _tft->loadFont(BUTTON_FONT_FAMILY);
-  _tft->setTextSize(BUTTON_FONT_SIZE);
-  _tft->setTextColor(textColor);
+  _btnLabel.setFont(_font);
+  _btnLabel.setFontColor(textColor);
 
   uint32_t textX = 0;
   uint32_t textY = _h / 2;
   if (_mode == BUTTON_MODE_TEXT)
   {
     if (_hasCustomColor)
-      _tft->fillRect(0, 0, _w, _h, backColor);
-    textX = 0;
+      _tft->fillRoundRect(0, 0, _w, _h, _radius, backColor);
   }
   if (_mode == BUTTON_MODE_NORMAL)
   {
-    _tft->fillRect(0, 0, _w, _h, backColor);
+    if (_hasShadow)
+      _tft->fillRoundRect(2, 2, _w - 2, _h - 2, _radius, COLOR_DARK_GRAY);
+    _tft->fillRoundRect(0, 0, _w - (_hasShadow ? 1 : 0), _h - (_hasShadow ? 1 : 0), _radius, backColor);
     textX = (_w / 2);
   }
-  textY += 2;
 
-  _tft->drawString(label, textX, textY);
-
-  _tft->unloadFont();
+  _btnLabel.setLabel(label);
+  _btnLabel.setDisabled(_isDisabled);
+  _btnLabel.setPosition(textX - (_hasShadow ? 2 : 0), textY - 2);
+  _btnLabel.setDatum(_datum);
+  _btnLabel.draw(force);
 
   _shouldRedraw = false;
 }

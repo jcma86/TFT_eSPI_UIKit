@@ -70,7 +70,7 @@ void MeterScreen::drawContent()
   {
     digitalMeter = DigitalMeter(_tft, "DigitalMeter");
     digitalMeter.setParentViewport(_contentX, _contentY, _contentW, _contentH);
-    digitalMeter.setColor(COLOR_BLACK);
+    digitalMeter.setFontColor(COLOR_BLACK);
   }
 
   if (!group.isReady())

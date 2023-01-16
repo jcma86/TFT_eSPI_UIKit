@@ -4,6 +4,7 @@
 #include <TFT_eSPI.h>
 #include "../../theme/default.hpp"
 #include "../../fonts/Fonts.hpp"
+#include "../../display/label/Label.hpp"
 #include "../ButtonBase.hpp"
 #include "../ButtonInterface.hpp"
 
@@ -16,16 +17,16 @@ typedef enum
 class Button : public ButtonBase
 {
 private:
-  // TFT_eSPI *_tft;
-  // char _id[30];
   char _label[30];
 
   ButtonInterface *_delegate = NULL;
   bool _isTouching = false;
   bool _isPressed = false;
-  bool _shouldRedraw = false;
   ButtonMode _mode = BUTTON_MODE_NORMAL;
   bool _hasCustomColor = false;
+  bool _hasShadow = false;
+  uint8_t _radius = 5;
+  Label _btnLabel;
 
   COLOR _backNormal;
   COLOR _backPressed;
@@ -46,6 +47,8 @@ public:
 
   void setDelegate(ButtonInterface *delegate);
   void setLabel(const char *label);
+  void setShadow(bool hasShadow = true);
+  void setRadius(uint8_t radius = 5);
   const char *getLabel();
   void setButtonMode(ButtonMode mode = BUTTON_MODE_NORMAL);
   void setHoverColors(COLOR backHover, COLOR textHover);

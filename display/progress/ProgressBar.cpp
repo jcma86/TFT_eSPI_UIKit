@@ -105,15 +105,21 @@ void ProgressBar::draw(bool forceRedraw)
   if (!_hidePercent)
   {
     char percent[10];
-    sprintf(percent, "%.1f %%", percentVal);
+    snprintf(percent, 10, "%.1f %%", percentVal);
 
-    _tft->loadFont(PROGRESS_BAR_FONT_FAMILY);
-    _tft->setTextColor(_fontColor);
-    _tft->setTextDatum(MC_DATUM);
+    if (!_lblPercent.isReady())
+    {
+      _lblPercent = Label(_tft, "PB_Percent");
+      _lblPercent.setParentViewport(_vX, _vY, _vW, _vH);
+    }
 
-    _tft->drawString(percent, _x + (_w / 2), _y + (_h / 2) + 2);
+    _lblPercent.setFont(_font);
+    _lblPercent.setFontColor(_fontColor);
+    _lblPercent.setPosition(_x + (_w / 2), _y + (_h / 2) + 2);
+    _lblPercent.setDatum(MC_DATUM);
+    _lblPercent.setLabel(percent);
 
-    _tft->unloadFont();
+    _lblPercent.draw();
   }
 
   _shouldRedraw = false;

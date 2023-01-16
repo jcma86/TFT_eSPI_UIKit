@@ -2,6 +2,7 @@
 #define __UIKIT_DISPLAY_PROGRESS_BAR__
 
 #include "../../base/BaseComponent.hpp"
+#include "../label/Label.hpp"
 
 class ProgressBar : public BaseComponent
 {
@@ -10,6 +11,7 @@ private:
   float _value = 0.0;
   float _min = 0.0;
   float _max = 100.0;
+  Label _lblPercent;
   COLOR _startColor = PROGRESS_BAR_COLOR_A;
   COLOR _endColor = PROGRESS_BAR_COLOR_B;
   COLOR _borderColor = PROGRESS_BAR_BORDER_COLOR;

@@ -39,7 +39,7 @@ void Screen::drawTitleBar()
     char title[80];
     if (_shouldRedraw)
     {
-      sprintf(title, "%s", _title);
+      snprintf(title, 80, "%s", _title);
       _tft->fillRect(0, 0, _w, TITLE_BAR_HEIGHT, TITLE_BAR_COLOR);
       _tft->setTextDatum(ML_DATUM);
       _tft->drawString(title, PADDING_NORMAL, (TITLE_BAR_HEIGHT / 2) - 3);
@@ -48,7 +48,8 @@ void Screen::drawTitleBar()
     {
       _clock = DigitalClock(_tft, "TitleBarClock");
       _clock.setParentViewport(0, 0, _w, TITLE_BAR_HEIGHT);
-      _clock.setFont(&IBMPlexMono_Regular6pt8b, MR_DATUM);
+      _clock.setFont(&IBMPlexMono_Regular6pt8b);
+      _clock.setDatum(MR_DATUM);
       _clock.setColors(TITLE_BAR_FONT_COLOR, TITLE_BAR_COLOR);
     }
 

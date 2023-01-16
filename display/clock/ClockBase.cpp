@@ -135,7 +135,7 @@ timer_struct *ClockBase::addTimer(ClockTimer timer, const char *description)
 
   timer_struct *newTimer = new timer_struct;
   newTimer->id = id;
-  strcpy(newTimer->description, description);
+  strncpy(newTimer->description, description, 50);
   newTimer->timer = timer;
   newTimer->timer.lastTime = now();
 
@@ -164,7 +164,7 @@ alarm_struct *ClockBase::addAlarm(ClockAlarm alarm, const char *description)
 
   alarm_struct *newAlarm = new alarm_struct;
   newAlarm->id = id;
-  strcpy(newAlarm->description, description);
+  strncpy(newAlarm->description, description, 50);
   newAlarm->alarm = alarm;
   newAlarm->alarm.triggered = false;
   newAlarm->alarm.lastTime = now();
